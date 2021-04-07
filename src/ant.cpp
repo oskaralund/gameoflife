@@ -35,7 +35,9 @@ void Ant::ReactToTile()
     case Ant::TileType::Basic:
       if (carrying_food_)
       {
-        SetCurrentTile({Ant::TileType::Scent});
+        SetCurrentTileType(Ant::TileType::Scent);
+        SetCurrentTileTimer(2.0);
+        SetCurrentTileFade(true);
       }
       break;
     case Ant::TileType::Food:

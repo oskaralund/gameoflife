@@ -29,7 +29,10 @@ public:
 
 protected:
   void SetType(Type);
-  void SetCurrentTile(Tile) const;
+  void SetCurrentTileType(int) const;
+  void SetCurrentTileTimer(double) const;
+  void SetCurrentTileColor(uint8_t color[4]) const;
+  void SetCurrentTileFade(bool fade) const;
   const Tile& GetCurrentTile() const;
 
 private:
@@ -38,6 +41,9 @@ private:
   double radius_{0.01};
   Type type_{Type::Basic};
   GameOfLife* game_;
+
+  void GetCurrentTileCoords(int*, int*) const;
+  void EnforcePeriodicity();
 };
 
 #endif

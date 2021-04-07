@@ -77,19 +77,46 @@ void Renderer::DrawTiles()
   {
     for (int j = 0; j < cols; ++j)
     {
+      const auto tile = game_->tiles_[i][j];
       sf::RectangleShape rect{sf::Vector2f(2.0/cols, 2.0/rows)};
       rect.setPosition(-1+j*2.0/cols, -1+i*2.0/rows);
-      if (game_->tiles_[i][j].type == 1)
+
+      auto fade = tile.fade ? tile.timer/tile.timer_length : 1.0;
+      switch (tile.type)
       {
-        rect.setFillColor(sf::Color::Red);
-      }
-      else if (game_->tiles_[i][j].type == 3)
-      {
-        rect.setFillColor(sf::Color::Yellow);
-      }
-      else
-      {
-        rect.setFillColor(sf::Color::Black);
+        case 0:
+        {
+          rect.setFillColor(sf::Color::Black);
+          break;
+        }
+        case 1:
+        {
+          auto color = sf::Color::Red;
+          color.a = fade*255;
+          rect.setFillColor(color);
+          break;
+        }
+        case 2:
+        {
+          auto color = sf::Color::Green;
+          color.a = fade*255;
+          rect.setFillColor(color);
+          break;
+        }
+        case 3:
+        {
+          auto color = sf::Color::Yellow;
+          color.a = fade*255;
+          rect.setFillColor(color);
+          break;
+        }
+        default:
+        {
+          auto color = sf::Color::White;
+          color.a = fade*255;
+          rect.setFillColor(color);
+          break;
+        }
       }
       window_->draw(rect);
     }

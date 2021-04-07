@@ -10,7 +10,6 @@ int main()
   GameOfLife game;
   game.AddAntColony();
   game.SetTileType(8,8,1);
-  game.SetTileType(4,4,2);
   Renderer renderer{&window, &game};
   Controller controller(&window, &renderer);
 

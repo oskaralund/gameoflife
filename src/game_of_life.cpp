@@ -15,7 +15,13 @@ GameOfLife::GameOfLife()
     row.reserve(num_cols_);
     for (int i = 0; i < num_cols_; ++i)
     {
-      row.push_back({0});
+      const int type = 0;
+      const double timer_length = 0.0;
+      const double timer = 0.0;
+      const bool timer_enabled = false;
+      const bool fade = false;
+      Tile tile = {type, timer_length, timer, timer_enabled, fade};
+      row.push_back(tile);
     }
   }
 
@@ -49,6 +55,26 @@ void GameOfLife::Move(double elapsed_time)
 
     time_accumulator_ -= dt_;
   }
+
+  UpdateTiles(elapsed_time);
+}
+
+void GameOfLife::UpdateTiles(double dt)
+{
+  for (int i = 0; i < num_rows_; ++i)
+    for (int j = 0; j < num_cols_; ++j)
+    {
+      if (tiles_[i][j].timer_enabled)
+      {
+        tiles_[i][j].timer -= dt;
+
+        if (tiles_[i][j].timer < 0)
+        {
+          tiles_[i][j].type = 0;
+          tiles_[i][j].timer_enabled = false;
+        }
+      }
+    }
 }
 
 void GameOfLife::AddBasicIndividual()
