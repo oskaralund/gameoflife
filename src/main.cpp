@@ -6,10 +6,10 @@
 
 int main()
 {
-  sf::RenderWindow window{ sf::VideoMode(200, 200), "SFML works!" };
+  sf::RenderWindow window{ sf::VideoMode(200, 200), "Game of Life" };
   GameOfLife game;
   game.AddAntColony();
-  game.SetTileType(8,8,1);
+  game.SetTileType(10,10,1);
   Renderer renderer{&window, &game};
   Controller controller(&window, &renderer);
 

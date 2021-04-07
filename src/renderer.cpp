@@ -20,7 +20,7 @@ void Renderer::Render()
   window_->setView(view_);
 
   DrawTiles();
-  DrawGrid();
+  //DrawGrid();
 
   for (const auto& individual : game_->individuals_)
   {
@@ -78,6 +78,11 @@ void Renderer::DrawTiles()
     for (int j = 0; j < cols; ++j)
     {
       const auto tile = game_->tiles_[i][j];
+      if (tile.type == 0)
+      {
+        continue;
+      }
+
       sf::RectangleShape rect{sf::Vector2f(2.0/cols, 2.0/rows)};
       rect.setPosition(-1+j*2.0/cols, -1+i*2.0/rows);
 

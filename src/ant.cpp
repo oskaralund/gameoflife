@@ -1,20 +1,11 @@
 #include "ant.hpp"
 
-#include <iostream>
+#include <cstdlib>
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/random.hpp>
 
-#include "ant_colony.hpp"
-#include "ant_food.hpp"
-#include "ant_food_scent.hpp"
 #include "game_of_life.hpp"
-
-Ant::Ant(GameOfLife* game)
-  : Individual(game)
-{
-  SetType(Individual::Type::Ant);
-}
 
 void Ant::Move(double dt)
 {
@@ -42,10 +33,38 @@ void Ant::ReactToTile()
       break;
     case Ant::TileType::Food:
       carrying_food_ = true;
-      SetRadius(0.02);
+      SetRadius(0.01);
       break;
     case Ant::TileType::Colony:
       carrying_food_ = false;
+      break;
+    case Ant::TileType::Scent:
+    {
+      if (carrying_food_)
+      {
+        break;
+      }
+
+      const auto dir = GetCurrentDirection();
+      Individual::Direction orth1, orth2;
+      GetOrthogonalDirections(&orth1, &orth2);
+      if (GetAdjacentTile(dir).type == TileType::Scent)
+      {
+        const auto target = GetTileCenter(GetAdjacentTile(dir));
+        GoToward(target);
+      }
+      else if (GetAdjacentTile(orth1).type == TileType::Scent)
+      {
+        const auto target = GetTileCenter(GetAdjacentTile(orth1));
+        GoToward(target);
+      }
+      else if (GetAdjacentTile(orth2).type == TileType::Scent)
+      {
+        const auto target = GetTileCenter(GetAdjacentTile(orth2));
+        GoToward(target);
+      }
+      break;
+    }
     default:
       break;
   }
@@ -55,11 +74,6 @@ void Ant::RandomDirectionAdjustment()
 {
   auto angle = glm::linearRand(-max_turning_angle_, max_turning_angle_);
   SetVelocity(glm::rotate(GetVelocity(), angle));
-}
-
-void Ant::SetColony(AntColony* colony)
-{
-  colony_ = colony;
 }
 
 void Ant::Render(sf::RenderWindow* window) const

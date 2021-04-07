@@ -4,13 +4,14 @@
 #include <vector>
 #include <memory>
 
-#include "object.hpp"
 #include "individual.hpp"
 #include "renderer.hpp"
 
 class AntFoodScent;
 class AntFood;
 struct Tile {
+  int row;
+  int col;
   int type;
   double timer_length;
   double timer;
@@ -32,8 +33,8 @@ public:
   double dy() const;
 
 private:
-  int num_cols_{100};
-  int num_rows_{100};
+  int num_cols_{20};
+  int num_rows_{20};
   double dx_{2.0/100.0};
   double dy_{2.0/100.0};
   double dt_{0.01};

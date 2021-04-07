@@ -4,24 +4,21 @@
 
 #include "individual.hpp"
 #include "ant.hpp"
-#include "ant_colony.hpp"
-#include "ant_food.hpp"
-#include "ant_food_scent.hpp"
 
 GameOfLife::GameOfLife()
   : tiles_(num_rows_)
 {
-  for (auto& row : tiles_) {
-    row.reserve(num_cols_);
-    for (int i = 0; i < num_cols_; ++i)
+  for (int i = 0; i < num_rows_; ++i) {
+    tiles_[i].reserve(num_cols_);
+    for (int j = 0; j < num_cols_; ++j)
     {
       const int type = 0;
       const double timer_length = 0.0;
       const double timer = 0.0;
       const bool timer_enabled = false;
       const bool fade = false;
-      Tile tile = {type, timer_length, timer, timer_enabled, fade};
-      row.push_back(tile);
+      Tile tile = {i, j, type, timer_length, timer, timer_enabled, fade};
+      tiles_[i].push_back(tile);
     }
   }
 
@@ -62,6 +59,7 @@ void GameOfLife::Move(double elapsed_time)
 void GameOfLife::UpdateTiles(double dt)
 {
   for (int i = 0; i < num_rows_; ++i)
+  {
     for (int j = 0; j < num_cols_; ++j)
     {
       if (tiles_[i][j].timer_enabled)
@@ -75,6 +73,7 @@ void GameOfLife::UpdateTiles(double dt)
         }
       }
     }
+  }
 }
 
 void GameOfLife::AddBasicIndividual()
@@ -91,14 +90,10 @@ void GameOfLife::AddAnt()
 
 void GameOfLife::AddAntColony()
 {
-  const int num_ants = 100;
-
-  auto ant_colony = std::make_unique<AntColony>();
+  const int num_ants = 10;
 
   for (int i = 0; i < num_ants; ++i) {
     auto ant = std::make_unique<Ant>(this);
-    ant_colony->AddAnt(ant.get());
-    ant->SetColony(ant_colony.get());
 
     auto theta = glm::linearRand(0.0, 2.0*3.14);
     ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});

@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include <SFML/Graphics.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 #include "game_of_life.hpp"
 
@@ -80,11 +81,6 @@ double Individual::GetRadius() const
   return radius_;
 }
 
-void Individual::SetType(Type type)
-{
-  type_ = type;
-}
-
 void Individual::SetRadius(double r)
 {
   radius_ = r;
@@ -125,4 +121,108 @@ void Individual::SetCurrentTileFade(bool fade) const
   int i, j;
   GetCurrentTileCoords(&i, &j);
   game_->tiles_[i][j].fade = fade;
+}
+
+const Tile& Individual::GetAdjacentTile(Direction dir) const
+{
+  int i, j;
+  GetCurrentTileCoords(&i, &j);
+
+  switch (dir)
+  {
+    case Direction::Down:
+      i = (game_->num_rows_+i-1) % game_->num_rows_;
+      break;
+    case Direction::Up:
+      i = (i+1) % game_->num_rows_;
+      break;
+    case Direction::Left:
+      j = (game_->num_cols_+j-1) % game_->num_cols_;
+      break;
+    case Direction::Right:
+      j = (j+1) % game_->num_cols_;
+      break;
+    default:
+      break;
+  }
+
+  return game_->tiles_[i][j];
+}
+
+Individual::Direction Individual::GetCurrentDirection() const
+{
+  const double epsilon = 1e-10;
+  if (glm::length(velocity_) < epsilon)
+  {
+    return Direction::None;
+  }
+
+  if (glm::angle(velocity_, {1.0, 0.0}) < 45)
+  {
+    return Direction::Right;
+  }
+  else if (glm::angle(velocity_, {0.0, 1.0}) < 45)
+  {
+    return Direction::Down;
+  }
+  else if (glm::angle(velocity_, {-1.0, 0.0}) < 45)
+  {
+    return Direction::Left;
+  } else
+  {
+    return Direction::Up;
+  }
+}
+
+void Individual::GetOrthogonalDirections(Direction* a, Direction* b) const
+{
+  const auto current_dir = GetCurrentDirection();
+
+  if (current_dir == Direction::Up || current_dir == Direction::Down)
+  {
+    *a = Direction::Left;
+    *b = Direction::Right;
+  }
+  else
+  {
+    *a = Direction::Up;
+    *b = Direction::Down;
+  }
+}
+
+glm::dvec2 Individual::DirectionToVector(Direction dir) const
+{
+  switch (dir)
+  {
+    case Direction::Up:
+      return {0.0, -1.0};
+    case Direction::Down:
+      return {0.0, 1.0};
+    case Direction::Left:
+      return {-1.0, 0.0};
+    case Direction::Right:
+      return {1.0, 0.0};
+    default:
+      return {0.0, 0.0};
+  }
+}
+
+void Individual::GoToward(glm::dvec2 target)
+{
+  const auto dir = target - position_;
+
+  if (glm::length(dir) < 1e-10)
+  {
+    return;
+  }
+
+  velocity_ = speed_*glm::normalize(dir);
+}
+
+glm::dvec2 Individual::GetTileCenter(const Tile& tile)
+{
+  const auto i = tile.row;
+  const auto j = tile.col;
+
+  return {(j+0.5)*game_->dx_-1, (i+0.5)*game_->dy_-1};
 }

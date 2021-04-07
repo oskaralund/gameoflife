@@ -14,7 +14,7 @@ namespace sf
 
 class Individual {
 public:
-  enum class Type { Basic, Ant };
+  enum class Direction { Left = 0, Right, Up, Down, None };
 
   Individual(GameOfLife*);
   virtual void Move(double dt);
@@ -28,18 +28,23 @@ public:
   GameOfLife* GetGame() const;
 
 protected:
-  void SetType(Type);
   void SetCurrentTileType(int) const;
   void SetCurrentTileTimer(double) const;
   void SetCurrentTileColor(uint8_t color[4]) const;
   void SetCurrentTileFade(bool fade) const;
   const Tile& GetCurrentTile() const;
+  const Tile& GetAdjacentTile(Direction) const;
+  Direction GetCurrentDirection() const;
+  void GetOrthogonalDirections(Direction* a, Direction* b) const;
+  glm::dvec2 GetTileCenter(const Tile&);
+  glm::dvec2 DirectionToVector(Direction dir) const;
+  void GoToward(glm::dvec2 target);
 
 private:
   glm::dvec2 position_{0,0};
   glm::dvec2 velocity_{0,0};
-  double radius_{0.01};
-  Type type_{Type::Basic};
+  double speed_{0.05};
+  double radius_{0.005};
   GameOfLife* game_;
 
   void GetCurrentTileCoords(int*, int*) const;
