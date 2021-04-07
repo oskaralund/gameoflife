@@ -9,7 +9,8 @@ int main()
   sf::RenderWindow window{ sf::VideoMode(200, 200), "SFML works!" };
   GameOfLife game;
   game.AddAntColony();
-  game.AddAntFood({25.0, 25.0});
+  game.SetTileType(8,8,1);
+  game.SetTileType(4,4,2);
   Renderer renderer{&window, &game};
   Controller controller(&window, &renderer);
 

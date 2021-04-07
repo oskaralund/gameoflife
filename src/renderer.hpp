@@ -18,6 +18,9 @@ private:
   sf::View view_;
   sf::Vector2f view_velocity_{.0f,.0f};
   sf::Clock clock_;
+
+  void DrawGrid();
+  void DrawTiles();
 };
 
 #endif

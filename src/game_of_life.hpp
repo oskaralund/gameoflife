@@ -4,31 +4,41 @@
 #include <vector>
 #include <memory>
 
-#include "individual.hpp"
 #include "object.hpp"
+#include "individual.hpp"
 #include "renderer.hpp"
 
 class AntFoodScent;
 class AntFood;
+struct Tile {
+  int type;
+};
 
 class GameOfLife
 {
 public:
+  GameOfLife();
   void Move(double elapsed_time);
   void AddBasicIndividual();
   void AddAnt();
   void AddAntColony();
-  void AddAntFood(glm::dvec2 position);
-  AntFoodScent* AddAntFoodScent(AntFood*);
-  std::vector<Object*> GetObjects() const;
+  void SetTileType(int i, int j, int type);
+  double dx() const;
+  double dy() const;
+  const Tile& GetTile(int, int) const;
 
 private:
+  int num_cols_{10};
+  int num_rows_{10};
+  double dx_{2.0/100.0};
+  double dy_{2.0/100.0};
   double dt_{0.01};
   double time_accumulator_{0.0};
   std::vector<std::unique_ptr<Individual>> individuals_;
-  std::vector<std::unique_ptr<Object>> objects_;
+  std::vector<std::vector<Tile>> tiles_;
 
-  friend void Renderer::Render();
+  friend Renderer;
+  friend Individual;
 };
 
 #endif

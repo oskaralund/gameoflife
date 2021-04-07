@@ -8,6 +8,33 @@
 #include "ant_food.hpp"
 #include "ant_food_scent.hpp"
 
+GameOfLife::GameOfLife()
+  : tiles_(num_rows_)
+{
+  for (auto& row : tiles_) {
+    row.reserve(num_cols_);
+    for (int i = 0; i < num_cols_; ++i)
+    {
+      row.push_back({0});
+    }
+  }
+
+  dx_ = 2.0/num_cols_;
+  dy_ = 2.0/num_rows_;
+}
+
+const Tile& GameOfLife::GetTile(int i, int j) const
+{
+  i = glm::clamp(i, 0, num_rows_-1);
+  j = glm::clamp(j, 0, num_cols_-1);
+  return tiles_[i][j];
+}
+
+void GameOfLife::SetTileType(int i, int j, int type)
+{
+  tiles_[i][j].type = type;
+}
+
 void GameOfLife::Move(double elapsed_time)
 {
   time_accumulator_ += 10*elapsed_time;
@@ -17,6 +44,7 @@ void GameOfLife::Move(double elapsed_time)
     for (auto& individual : individuals_)
     {
       individual->Move(dt_);
+      individual->ReactToTile();
     }
 
     time_accumulator_ -= dt_;
@@ -32,12 +60,12 @@ void GameOfLife::AddBasicIndividual()
 void GameOfLife::AddAnt()
 {
   individuals_.emplace_back(std::make_unique<Ant>(this));
-  individuals_.back()->SetVelocity({5.0,0.0});
+  individuals_.back()->SetVelocity({0.05,0.0});
 }
 
 void GameOfLife::AddAntColony()
 {
-  const int num_ants = 10000;
+  const int num_ants = 100;
 
   auto ant_colony = std::make_unique<AntColony>();
 
@@ -47,36 +75,10 @@ void GameOfLife::AddAntColony()
     ant->SetColony(ant_colony.get());
 
     auto theta = glm::linearRand(0.0, 2.0*3.14);
-    ant->SetVelocity({glm::cos(theta), glm::sin(theta)});
+    ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
     individuals_.push_back(std::move(ant));
   }
-
-  objects_.push_back(std::move(ant_colony));
 }
 
-void GameOfLife::AddAntFood(glm::dvec2 position)
-{
-  auto ant_food = std::make_unique<AntFood>();
-  ant_food->SetPosition(position);
-  objects_.push_back(std::move(ant_food));
-}
-
-std::vector<Object*> GameOfLife::GetObjects() const {
-  std::vector<Object*> objects;
-  objects.reserve(objects_.size());
-
-  for (const auto& object : objects_)
-  {
-    objects.push_back(object.get());
-  }
-
-  return objects;
-}
-
-AntFoodScent* GameOfLife::AddAntFoodScent(AntFood* food)
-{
-  auto ant_food_scent = std::make_unique<AntFoodScent>(food);
-  auto ret = ant_food_scent.get();
-  objects_.push_back(std::move(ant_food_scent));
-  return ret;
-}
+double GameOfLife::dx() const { return dx_; }
+double GameOfLife::dy() const { return dy_; }

@@ -12,7 +12,16 @@ class Ant : public Individual
 {
 public:
   Ant(GameOfLife*);
+
+  enum TileType {
+    Basic = 0,
+    Food,
+    Colony,
+    Scent
+  };
+
   void Move(double dt) override;
+  void ReactToTile() override;
   void Render(sf::RenderWindow* window) const;
   void SetColony(AntColony*);
 

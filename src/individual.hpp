@@ -3,12 +3,14 @@
 
 #include <glm/glm.hpp>
 
+class GameOfLife;
+struct Tile;
+
 namespace sf
 {
   class RenderWindow;
 }
 
-class GameOfLife;
 
 class Individual {
 public:
@@ -16,6 +18,7 @@ public:
 
   Individual(GameOfLife*);
   virtual void Move(double dt);
+  virtual void ReactToTile();
   virtual void Render(sf::RenderWindow* window) const;
   void SetVelocity(glm::dvec2);
   void SetRadius(double);
@@ -26,11 +29,13 @@ public:
 
 protected:
   void SetType(Type);
+  void SetCurrentTile(Tile) const;
+  const Tile& GetCurrentTile() const;
 
 private:
   glm::dvec2 position_{0,0};
   glm::dvec2 velocity_{0,0};
-  double radius_{1.0};
+  double radius_{0.01};
   Type type_{Type::Basic};
   GameOfLife* game_;
 };

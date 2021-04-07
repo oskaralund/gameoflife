@@ -30,7 +30,7 @@ protected:
 
 private:
   glm::dvec2 position_{0.0, 0.0};
-  double radius_{1.0};
+  double radius_{0.01};
   Type type_{Type::Basic};
 };
 
