@@ -11,7 +11,13 @@ namespace sf
 class Object
 {
 public:
-  enum class Type { Basic, AntColony, AntFood };
+  enum class Type { Basic, AntColony, AntFood, AntFoodScent };
+  struct AABB {
+    double xmin;
+    double xmax;
+    double ymin;
+    double ymax;
+  };
 
   void SetPosition(glm::dvec2);
   glm::dvec2 GetPosition() const;

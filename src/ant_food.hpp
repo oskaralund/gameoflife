@@ -7,8 +7,11 @@ class AntFood : public Object
 {
 public:
   AntFood();
+  void SetVisited(bool);
+  bool HasBeenVisited() const;
 
 private:
+  bool visited_{false};
 };
 
 #endif

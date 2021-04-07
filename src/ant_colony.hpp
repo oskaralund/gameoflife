@@ -15,6 +15,7 @@ public:
 
 private:
   std::vector<Ant*> ants_;
+  bool visited_{false};
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "ant.hpp"
 #include "ant_colony.hpp"
 #include "ant_food.hpp"
+#include "ant_food_scent.hpp"
 
 void GameOfLife::Move(double elapsed_time)
 {
@@ -36,7 +37,7 @@ void GameOfLife::AddAnt()
 
 void GameOfLife::AddAntColony()
 {
-  const int num_ants = 100;
+  const int num_ants = 10000;
 
   auto ant_colony = std::make_unique<AntColony>();
 
@@ -70,4 +71,12 @@ std::vector<Object*> GameOfLife::GetObjects() const {
   }
 
   return objects;
+}
+
+AntFoodScent* GameOfLife::AddAntFoodScent(AntFood* food)
+{
+  auto ant_food_scent = std::make_unique<AntFoodScent>(food);
+  auto ret = ant_food_scent.get();
+  objects_.push_back(std::move(ant_food_scent));
+  return ret;
 }

@@ -6,19 +6,23 @@
 #include "individual.hpp"
 
 class AntColony;
+class AntFoodScent;
 
 class Ant : public Individual
 {
 public:
   Ant(GameOfLife*);
   void Move(double dt) override;
+  void Render(sf::RenderWindow* window) const;
   void SetColony(AntColony*);
 
 private:
   double time_accumulator_{0.0};
+  double distance_accumulator_{0.0};
   double max_turning_angle_{0.25*3.14};
   AntColony* colony_{nullptr};
   bool carrying_food_{false};
+  AntFoodScent* scent_{nullptr};
 
   void RandomDirectionAdjustment();
   void InteractWithObjects();

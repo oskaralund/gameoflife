@@ -25,6 +25,7 @@ add_executable(main src/main.cpp
                     src/object.cpp
                     src/ant_colony.cpp
                     src/ant_food.cpp
+                    src/ant_food_scent.cpp
                     src/game_of_life.cpp)
 #target_include_directories(main PUBLIC include)
 target_link_libraries(main PUBLIC -lsfml-graphics -lsfml-window -lsfml-system)

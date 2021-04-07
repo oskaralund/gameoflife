@@ -8,6 +8,9 @@
 #include "object.hpp"
 #include "renderer.hpp"
 
+class AntFoodScent;
+class AntFood;
+
 class GameOfLife
 {
 public:
@@ -16,6 +19,7 @@ public:
   void AddAnt();
   void AddAntColony();
   void AddAntFood(glm::dvec2 position);
+  AntFoodScent* AddAntFoodScent(AntFood*);
   std::vector<Object*> GetObjects() const;
 
 private:

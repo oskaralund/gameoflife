@@ -8,6 +8,7 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
 {
   view_.setCenter(sf::Vector2f{0.0f, 0.5f});
   view_.setSize(sf::Vector2f{2.0, 2.0});
+  view_.zoom(30);
   window_->setView(view_);
   clock_.restart();
 }

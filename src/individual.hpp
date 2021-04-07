@@ -16,7 +16,7 @@ public:
 
   Individual(GameOfLife*);
   virtual void Move(double dt);
-  void Render(sf::RenderWindow* window) const;
+  virtual void Render(sf::RenderWindow* window) const;
   void SetVelocity(glm::dvec2);
   void SetRadius(double);
   double GetRadius() const;
