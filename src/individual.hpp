@@ -32,6 +32,8 @@ protected:
   void SetCurrentTileTimer(double) const;
   void SetCurrentTileColor(uint8_t color[4]) const;
   void SetCurrentTileFade(bool fade) const;
+  void SetCurrentTileOwner() const;
+  int GetId() const;
   const Tile& GetCurrentTile() const;
   const Tile& GetAdjacentTile(Direction) const;
   Direction GetCurrentDirection() const;
@@ -41,11 +43,13 @@ protected:
   void GoToward(glm::dvec2 target);
 
 private:
+  int id_;
   glm::dvec2 position_{0,0};
   glm::dvec2 velocity_{0,0};
   double speed_{0.05};
   double radius_{0.005};
   GameOfLife* game_;
+  static int instances;
 
   void GetCurrentTileCoords(int*, int*) const;
   void EnforcePeriodicity();

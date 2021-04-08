@@ -7,8 +7,6 @@
 #include "individual.hpp"
 #include "renderer.hpp"
 
-class AntFoodScent;
-class AntFood;
 struct Tile {
   int row;
   int col;
@@ -17,6 +15,7 @@ struct Tile {
   double timer;
   bool timer_enabled;
   bool fade;
+  int owner;
 };
 
 class GameOfLife
@@ -33,8 +32,8 @@ public:
   double dy() const;
 
 private:
-  int num_cols_{20};
-  int num_rows_{20};
+  int num_cols_{200};
+  int num_rows_{200};
   double dx_{2.0/100.0};
   double dy_{2.0/100.0};
   double dt_{0.01};
@@ -43,6 +42,8 @@ private:
   std::vector<std::vector<Tile>> tiles_;
 
   void UpdateTiles(double dt);
+  void PositionToTile(glm::dvec2, int*, int*) const;
+  glm::dvec2 GetTileCenter(int i, int j) const;
 
   friend Renderer;
   friend Individual;

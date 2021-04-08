@@ -9,19 +9,37 @@
 
 void Ant::Move(double dt)
 {
-  if (time_accumulator_ > 1.0)
+  if (time_accumulator_ > turning_time_)
   {
-    RandomDirectionAdjustment();
+    turning_angle_ = glm::linearRand(-3.14/2, 3.14/2);
+    if (carrying_food_)
+    {
+      GoToward(colony_pos_);
+    }
+    //if (!carrying_food_)
+    //{
+    //  RandomDirectionAdjustment();
+    //}
+    //else
+    //{
+    //  GoToward(colony_pos_);
+    //  const auto distance_to_colony = glm::distance(GetPosition(), colony_pos_);
+    //  auto perturbation_angle =
+    //    glm::linearRand(-3.14/2*distance_to_colony, 3.14/2*distance_to_colony);
+    //  SetVelocity(glm::rotate(GetVelocity(), perturbation_angle));
+    //}
     time_accumulator_ = 0.0;
   }
 
+  SetVelocity(glm::rotate(GetVelocity(), turning_angle_*dt/turning_time_));
   Individual::Move(dt);
   time_accumulator_ += dt;
 }
 
 void Ant::ReactToTile()
 {
-  switch (GetCurrentTile().type)
+  const auto tile = GetCurrentTile();
+  switch (tile.type)
   {
     case Ant::TileType::Basic:
       if (carrying_food_)
@@ -29,18 +47,21 @@ void Ant::ReactToTile()
         SetCurrentTileType(Ant::TileType::Scent);
         SetCurrentTileTimer(2.0);
         SetCurrentTileFade(true);
+        if (tile.owner == -1)
+        {
+          SetCurrentTileOwner();
+        }
       }
       break;
     case Ant::TileType::Food:
       carrying_food_ = true;
-      SetRadius(0.01);
       break;
     case Ant::TileType::Colony:
       carrying_food_ = false;
       break;
     case Ant::TileType::Scent:
     {
-      if (carrying_food_)
+      if (tile.owner == GetId())
       {
         break;
       }
@@ -83,4 +104,9 @@ void Ant::Render(sf::RenderWindow* window) const
   circ.setPosition(GetPosition().x, GetPosition().y);
   circ.setOrigin(circ.getRadius(), circ.getRadius());
   window->draw(circ);
+}
+
+void Ant::SetColonyPosition(glm::dvec2 pos)
+{
+  colony_pos_ = pos;
 }

@@ -8,9 +8,13 @@
 
 #include "game_of_life.hpp"
 
+int Individual::instances = 0;
+
 Individual::Individual(GameOfLife* game)
   : game_(game)
-{}
+{
+  id_ = Individual::instances++;
+}
 
 void Individual::Move(double dt)
 {
@@ -87,8 +91,8 @@ void Individual::SetRadius(double r)
 }
 
 void Individual::GetCurrentTileCoords(int* i, int* j) const {
-  *i = static_cast<int>((1+position_.y)/game_->dy());
-  *j = static_cast<int>((1+position_.x)/game_->dx());
+  *i = static_cast<int>((1+position_.y)/game_->dy_);
+  *j = static_cast<int>((1+position_.x)/game_->dx_);
   *i = glm::clamp(*i, 0, game_->num_rows_-1);
   *j = glm::clamp(*j, 0, game_->num_cols_-1);
 }
@@ -123,6 +127,13 @@ void Individual::SetCurrentTileFade(bool fade) const
   game_->tiles_[i][j].fade = fade;
 }
 
+void Individual::SetCurrentTileOwner() const
+{
+  int i, j;
+  GetCurrentTileCoords(&i, &j);
+  game_->tiles_[i][j].owner = id_;
+}
+
 const Tile& Individual::GetAdjacentTile(Direction dir) const
 {
   int i, j;
@@ -130,10 +141,10 @@ const Tile& Individual::GetAdjacentTile(Direction dir) const
 
   switch (dir)
   {
-    case Direction::Down:
+    case Direction::Up:
       i = (game_->num_rows_+i-1) % game_->num_rows_;
       break;
-    case Direction::Up:
+    case Direction::Down:
       i = (i+1) % game_->num_rows_;
       break;
     case Direction::Left:
@@ -157,18 +168,21 @@ Individual::Direction Individual::GetCurrentDirection() const
     return Direction::None;
   }
 
-  if (glm::angle(velocity_, {1.0, 0.0}) < 45)
+  const auto dir = glm::normalize(velocity_);
+
+  if (glm::angle(dir, {1.0, 0.0}) < 3.14/4)
   {
     return Direction::Right;
   }
-  else if (glm::angle(velocity_, {0.0, 1.0}) < 45)
+  else if (glm::angle(dir, {0.0, 1.0}) < 3.14/4)
   {
     return Direction::Down;
   }
-  else if (glm::angle(velocity_, {-1.0, 0.0}) < 45)
+  else if (glm::angle(dir, {-1.0, 0.0}) < 3.14/4)
   {
     return Direction::Left;
-  } else
+  }
+  else
   {
     return Direction::Up;
   }
@@ -225,4 +239,9 @@ glm::dvec2 Individual::GetTileCenter(const Tile& tile)
   const auto j = tile.col;
 
   return {(j+0.5)*game_->dx_-1, (i+0.5)*game_->dy_-1};
+}
+
+int Individual::GetId() const
+{
+  return id_;
 }
