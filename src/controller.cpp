@@ -2,8 +2,12 @@
 
 #include <iostream>
 
-Controller::Controller(sf::RenderWindow* window, Renderer* renderer)
-  : window_(window)
+#include "renderer.hpp"
+#include "game_of_life.hpp"
+
+Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* renderer)
+  : game_(game)
+  , window_(window)
   , renderer_(renderer)
 {
   auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
@@ -23,6 +27,10 @@ void Controller::ProcessInput() {
 
       case sf::Event::KeyPressed:
         KeyPressed(event);
+        break;
+
+      case sf::Event::MouseButtonPressed:
+        MouseButtonPressed(event);
         break;
 
       case sf::Event::MouseMoved:
@@ -52,6 +60,19 @@ void Controller::KeyPressed(sf::Event event)
   }
 }
 
+void Controller::MouseButtonPressed(sf::Event event)
+{
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+  {
+    auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
+    auto cursor = window_->mapPixelToCoords(cursor_pixel_pos);
+    int i, j;
+    game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
+    int tile_type = 1;
+    game_->SetTileType(i, j, tile_type);
+  }
+}
+
 void Controller::MouseMoved(sf::Event event)
 {
   auto new_cursor_pixel_pos = sf::Mouse::getPosition(*window_);
@@ -61,6 +82,23 @@ void Controller::MouseMoved(sf::Event event)
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
   {
     renderer_->MoveCamera(cursor_delta);
+  }
+
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+  {
+    auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
+    auto cursor = window_->mapPixelToCoords(cursor_pixel_pos);
+    int i, j;
+    game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
+    int tile_type = 1;
+    for (int a = -10; a < 10; ++a)
+    {
+      for (int b = -10; b < 10; ++b)
+      {
+        game_->SetTileType(i+a, j+b, tile_type);
+      }
+    }
+    //game_->SetTileType(i, j, tile_type);
   }
 
   cursor_ = window_->mapPixelToCoords(new_cursor_pixel_pos);

@@ -14,7 +14,14 @@ public:
     Basic = 0,
     Food,
     Colony,
-    Scent
+    FoodScent,
+    HomeScent
+  };
+
+  struct TileData {
+    double food_scent{0.0};
+    double colony_scent{0.0};
+    double intensity{1.0};
   };
 
   void Move(double dt) override;
@@ -27,12 +34,17 @@ private:
   double distance_accumulator_{0.0};
   double max_turning_angle_{0.25*3.14};
   double turning_angle_{0.0};
-  double turning_time_ = 5.0;
+  double turning_time_{1.0};
+  double food_scent_{0.0};
+  double colony_scent_{1.0};
   bool carrying_food_{false};
   glm::dvec2 colony_pos_{0.0, 0.0};
 
   void RandomDirectionAdjustment();
   void InteractWithObjects();
+  void LeaveScent() const;
+  void SniffForFood();
+  void SniffForColony();
 };
 
 #endif

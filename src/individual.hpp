@@ -1,6 +1,8 @@
 #ifndef INDIVIDUAL_HPP_
 #define INDIVIDUAL_HPP_
 
+#include <vector>
+
 #include <glm/glm.hpp>
 
 class GameOfLife;
@@ -32,18 +34,20 @@ protected:
   void SetCurrentTileTimer(double) const;
   void SetCurrentTileColor(uint8_t color[4]) const;
   void SetCurrentTileFade(bool fade) const;
-  void SetCurrentTileOwner() const;
   int GetId() const;
-  const Tile& GetCurrentTile() const;
-  const Tile& GetAdjacentTile(Direction) const;
+  Tile* GetCurrentTile() const;
+  Tile* GetAdjacentTile(Direction) const;
   Direction GetCurrentDirection() const;
   void GetOrthogonalDirections(Direction* a, Direction* b) const;
   glm::dvec2 GetTileCenter(const Tile&);
   glm::dvec2 DirectionToVector(Direction dir) const;
   void GoToward(glm::dvec2 target);
+  std::vector<Tile*> GetSurroundingTiles() const;
+  void GetCurrentTileCoords(int*, int*) const;
 
 private:
   int id_;
+  int view_distance_{1};
   glm::dvec2 position_{0,0};
   glm::dvec2 velocity_{0,0};
   double speed_{0.05};
@@ -51,7 +55,6 @@ private:
   GameOfLife* game_;
   static int instances;
 
-  void GetCurrentTileCoords(int*, int*) const;
   void EnforcePeriodicity();
 };
 

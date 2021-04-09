@@ -8,6 +8,19 @@
 GameOfLife::GameOfLife()
   : tiles_(num_rows_)
 {
+  Initialize();
+}
+
+GameOfLife::GameOfLife(int rows, int cols)
+  : num_rows_(rows)
+  , num_cols_(cols)
+  , tiles_(rows)
+{
+  Initialize();
+}
+
+void GameOfLife::Initialize()
+{
   for (int i = 0; i < num_rows_; ++i) {
     tiles_[i].reserve(num_cols_);
     for (int j = 0; j < num_cols_; ++j)
@@ -17,8 +30,7 @@ GameOfLife::GameOfLife()
       const double timer = 0.0;
       const bool timer_enabled = false;
       const bool fade = false;
-      const int owner = -1;
-      Tile tile = {i, j, type, timer_length, timer, timer_enabled, fade, owner};
+      Tile tile = {i, j, type, timer_length, timer, timer_enabled, fade};
       tiles_[i].push_back(tile);
     }
   }
@@ -27,11 +39,9 @@ GameOfLife::GameOfLife()
   dy_ = 2.0/num_rows_;
 }
 
-const Tile& GameOfLife::GetTile(int i, int j) const
+Tile* GameOfLife::GetTile(int i, int j)
 {
-  i = glm::clamp(i, 0, num_rows_-1);
-  j = glm::clamp(j, 0, num_cols_-1);
-  return tiles_[i][j];
+  return &tiles_[i][j];
 }
 
 void GameOfLife::SetTileType(int i, int j, int type)
@@ -70,29 +80,20 @@ void GameOfLife::UpdateTiles(double dt)
         if (tiles_[i][j].timer < 0)
         {
           tiles_[i][j].type = 0;
-          tiles_[i][j].owner = -1;
           tiles_[i][j].timer_enabled = false;
         }
+      }
+
+      if (tiles_[i][j].update)
+      {
+        tiles_[i][j].update(dt);
       }
     }
   }
 }
 
-void GameOfLife::AddBasicIndividual()
+void GameOfLife::AddAntColony(int num_ants)
 {
-  individuals_.emplace_back(std::make_unique<Individual>(this));
-  individuals_.back()->SetVelocity({0.1,0.0});
-}
-
-void GameOfLife::AddAnt()
-{
-  individuals_.emplace_back(std::make_unique<Ant>(this));
-  individuals_.back()->SetVelocity({0.05,0.0});
-}
-
-void GameOfLife::AddAntColony()
-{
-  const int num_ants = 1000;
   glm::dvec2 colony_pos{0.0, 0.0};
   int i,j;
   PositionToTile(colony_pos, &i, &j);
@@ -121,4 +122,13 @@ void GameOfLife::PositionToTile(glm::dvec2 pos, int* i, int* j) const
 glm::dvec2 GameOfLife::GetTileCenter(int i, int j) const
 {
   return {(j+0.5)*dx_-1, (i+0.5)*dy_-1};
+}
+
+int GameOfLife::GetNumRows() const
+{
+  return num_rows_;
+}
+int GameOfLife::GetNumCols() const
+{
+  return num_cols_;
 }

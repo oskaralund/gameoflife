@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 
 #include "game_of_life.hpp"
+#include "ant.hpp"
 
 Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   : window_(window)
@@ -77,7 +78,7 @@ void Renderer::DrawTiles()
   {
     for (int j = 0; j < cols; ++j)
     {
-      const auto tile = game_->tiles_[i][j];
+      auto tile = game_->tiles_[i][j];
       if (tile.type == 0)
       {
         continue;
@@ -123,6 +124,16 @@ void Renderer::DrawTiles()
           break;
         }
       }
+
+      //if (tile.data)
+      //{
+      //  auto tile_data = tile.GetData<Ant::TileData>();
+      //  auto color = sf::Color::Yellow;
+      //  //color.a = tile_data->food_scent*255;
+      //  if (tile_data->food_scent > 0)
+      //    rect.setFillColor(color);
+      //}
+
       window_->draw(rect);
     }
   }

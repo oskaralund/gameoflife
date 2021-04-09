@@ -7,11 +7,17 @@
 int main()
 {
   sf::RenderWindow window{ sf::VideoMode(200, 200), "Game of Life" };
-  GameOfLife game;
-  game.AddAntColony();
-  game.SetTileType(5,5,1);
+  //GameOfLife game{20,20};
+  //game.AddAntColony(20);
+  //game.SetTileType(6,5,1);
+  //GameOfLife game{100,100};
+  //game.AddAntColony(200);
+  //game.SetTileType(35,35,1);
+  GameOfLife game(1000,1000);
+  game.AddAntColony(500);
+  game.SetTileType(15,15,1);
   Renderer renderer{&window, &game};
-  Controller controller(&window, &renderer);
+  Controller controller(&game, &window, &renderer);
 
   sf::Clock clock;
   sf::Time time;

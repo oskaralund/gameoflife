@@ -97,11 +97,11 @@ void Individual::GetCurrentTileCoords(int* i, int* j) const {
   *j = glm::clamp(*j, 0, game_->num_cols_-1);
 }
 
-const Tile& Individual::GetCurrentTile() const
+Tile* Individual::GetCurrentTile() const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
-  return game_->GetTile(i,j);
+  return &game_->tiles_[i][j];
 }
 
 void Individual::SetCurrentTileType(int type) const
@@ -127,14 +127,7 @@ void Individual::SetCurrentTileFade(bool fade) const
   game_->tiles_[i][j].fade = fade;
 }
 
-void Individual::SetCurrentTileOwner() const
-{
-  int i, j;
-  GetCurrentTileCoords(&i, &j);
-  game_->tiles_[i][j].owner = id_;
-}
-
-const Tile& Individual::GetAdjacentTile(Direction dir) const
+Tile* Individual::GetAdjacentTile(Direction dir) const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
@@ -157,7 +150,7 @@ const Tile& Individual::GetAdjacentTile(Direction dir) const
       break;
   }
 
-  return game_->tiles_[i][j];
+  return &game_->tiles_[i][j];
 }
 
 Individual::Direction Individual::GetCurrentDirection() const
@@ -244,4 +237,32 @@ glm::dvec2 Individual::GetTileCenter(const Tile& tile)
 int Individual::GetId() const
 {
   return id_;
+}
+
+std::vector<Tile*> Individual::GetSurroundingTiles() const
+{
+  int my_i, my_j;
+  GetCurrentTileCoords(&my_i, &my_j);
+  int max_row = glm::min(my_i+view_distance_, game_->num_rows_-1);
+  int min_row = glm::max(my_i-view_distance_, 0);
+  int max_col = glm::min(my_j+view_distance_, game_->num_cols_-1);
+  int min_col = glm::max(my_j-view_distance_, 0);
+
+  std::vector<Tile*> surrounding_tiles;
+  const int num_tiles = 4*(view_distance_+1)*(view_distance_+1);
+  surrounding_tiles.reserve(num_tiles);
+
+  for (int i = min_row; i <= max_row; ++i)
+  {
+    for (int j = min_col; j <= max_col; ++j)
+    {
+      if (i == my_i && j == my_j)
+      {
+        continue;
+      }
+      surrounding_tiles.push_back(&game_->tiles_[i][j]);
+    }
+  }
+
+  return surrounding_tiles;
 }

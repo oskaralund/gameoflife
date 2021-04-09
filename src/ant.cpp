@@ -9,83 +9,48 @@
 
 void Ant::Move(double dt)
 {
+  food_scent_ -= 0.1*dt;
+  food_scent_ = glm::max(food_scent_, 0.0);
+  colony_scent_ -= 0.1*dt;
+  colony_scent_ = glm::max(colony_scent_, 0.0);
+  LeaveScent();
+
   if (time_accumulator_ > turning_time_)
   {
-    turning_angle_ = glm::linearRand(-3.14/2, 3.14/2);
-    if (carrying_food_)
-    {
-      GoToward(colony_pos_);
-    }
-    //if (!carrying_food_)
-    //{
-    //  RandomDirectionAdjustment();
-    //}
-    //else
-    //{
-    //  GoToward(colony_pos_);
-    //  const auto distance_to_colony = glm::distance(GetPosition(), colony_pos_);
-    //  auto perturbation_angle =
-    //    glm::linearRand(-3.14/2*distance_to_colony, 3.14/2*distance_to_colony);
-    //  SetVelocity(glm::rotate(GetVelocity(), perturbation_angle));
-    //}
+    RandomDirectionAdjustment();
     time_accumulator_ = 0.0;
   }
 
-  SetVelocity(glm::rotate(GetVelocity(), turning_angle_*dt/turning_time_));
   Individual::Move(dt);
   time_accumulator_ += dt;
 }
 
 void Ant::ReactToTile()
 {
-  const auto tile = GetCurrentTile();
-  switch (tile.type)
+  if (!carrying_food_)
   {
-    case Ant::TileType::Basic:
-      if (carrying_food_)
-      {
-        SetCurrentTileType(Ant::TileType::Scent);
-        SetCurrentTileTimer(2.0);
-        SetCurrentTileFade(true);
-        if (tile.owner == -1)
-        {
-          SetCurrentTileOwner();
-        }
-      }
-      break;
+    SniffForFood();
+  }
+  else
+  {
+    SniffForColony();
+  }
+
+  auto tile = GetCurrentTile();
+  switch (tile->type)
+  {
     case Ant::TileType::Food:
+      if (carrying_food_)
+        break;
+
       carrying_food_ = true;
+      food_scent_ = 1.0;
+      SetCurrentTileType(Ant::TileType::Basic);
       break;
     case Ant::TileType::Colony:
       carrying_food_ = false;
+      colony_scent_ = 1.0;
       break;
-    case Ant::TileType::Scent:
-    {
-      if (tile.owner == GetId())
-      {
-        break;
-      }
-
-      const auto dir = GetCurrentDirection();
-      Individual::Direction orth1, orth2;
-      GetOrthogonalDirections(&orth1, &orth2);
-      if (GetAdjacentTile(dir).type == TileType::Scent)
-      {
-        const auto target = GetTileCenter(GetAdjacentTile(dir));
-        GoToward(target);
-      }
-      else if (GetAdjacentTile(orth1).type == TileType::Scent)
-      {
-        const auto target = GetTileCenter(GetAdjacentTile(orth1));
-        GoToward(target);
-      }
-      else if (GetAdjacentTile(orth2).type == TileType::Scent)
-      {
-        const auto target = GetTileCenter(GetAdjacentTile(orth2));
-        GoToward(target);
-      }
-      break;
-    }
     default:
       break;
   }
@@ -109,4 +74,120 @@ void Ant::Render(sf::RenderWindow* window) const
 void Ant::SetColonyPosition(glm::dvec2 pos)
 {
   colony_pos_ = pos;
+}
+
+void Ant::LeaveScent() const
+{
+  auto tile = GetCurrentTile();
+
+  if (!tile->data)
+  {
+    auto tile_data = std::make_shared<TileData>();
+    tile_data->food_scent = food_scent_;
+    tile_data->colony_scent = colony_scent_;
+    tile->data = tile_data;
+  }
+  else
+  {
+    auto tile_data = tile->GetData<TileData>();
+    if (food_scent_ > tile_data->food_scent)
+    {
+      tile_data->food_scent = food_scent_;
+    }
+
+    if (colony_scent_ > tile_data->colony_scent)
+    {
+      tile_data->colony_scent = colony_scent_;
+    }
+  }
+}
+
+void Ant::SniffForFood()
+{
+  int my_i, my_j;
+  GetCurrentTileCoords(&my_i, &my_j);
+  int max_row = glm::min(my_i+1, GetGame()->GetNumRows()-1);
+  int min_row = glm::max(my_i-1, 0);
+  int max_col = glm::min(my_j+1, GetGame()->GetNumCols()-1);
+  int min_col = glm::max(my_j-1, 0);
+
+  const Tile* target = nullptr;
+  double scent = 0.0;
+  for (int i = min_row; i <= max_row; ++i)
+  {
+    for (int j = min_col; j <= max_col; ++j)
+    {
+      if (i == my_i && j == my_j)
+        continue;
+
+      const auto tile = GetGame()->GetTile(i,j);
+      if (!tile->data)
+        continue;
+
+      const auto data = tile->GetData<TileData>();
+
+      if (data->food_scent > scent)
+      {
+        scent = data->food_scent;
+        target = tile;
+      }
+    }
+  }
+
+  auto my_tile = GetCurrentTile();
+  if (my_tile->data)
+  {
+    auto my_tile_data = my_tile->GetData<TileData>();
+    if (scent <= my_tile_data->food_scent && my_tile->type != Ant::TileType::Food)
+    {
+      my_tile_data->food_scent = 0.0;
+      return;
+    }
+  }
+
+  if (target)
+  {
+    GoToward(GetTileCenter(*target));
+  }
+}
+
+void Ant::SniffForColony()
+{
+  int my_i, my_j;
+  GetCurrentTileCoords(&my_i, &my_j);
+  int max_row = glm::min(my_i+1, GetGame()->GetNumRows()-1);
+  int min_row = glm::max(my_i-1, 0);
+  int max_col = glm::min(my_j+1, GetGame()->GetNumCols()-1);
+  int min_col = glm::max(my_j-1, 0);
+
+  const Tile* target = nullptr;
+  double scent = 0.0;
+  for (int i = min_row; i <= max_row; ++i)
+  {
+    for (int j = min_col; j <= max_col; ++j)
+    {
+      const auto tile = GetGame()->GetTile(i,j);
+      if (tile->type == TileType::Food)
+      {
+        GoToward(GetTileCenter(*tile));
+        return;
+      }
+      if (!tile->data)
+      {
+        continue;
+      }
+      const auto data = tile->GetData<TileData>();
+
+      if (data->colony_scent > scent)
+      {
+        scent = data->colony_scent;
+        target = tile;
+      }
+    }
+  }
+
+  if (target)
+  {
+    GoToward(GetTileCenter(*target));
+  }
 }
