@@ -98,7 +98,7 @@ void Controller::MouseMoved(sf::Event event)
         game_->SetTileType(i+a, j+b, tile_type);
       }
     }
-    //game_->SetTileType(i, j, tile_type);
+    game_->SetTileType(i, j, tile_type);
   }
 
   cursor_ = window_->mapPixelToCoords(new_cursor_pixel_pos);

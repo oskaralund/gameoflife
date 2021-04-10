@@ -79,6 +79,7 @@ void Renderer::DrawTiles()
     for (int j = 0; j < cols; ++j)
     {
       auto tile = game_->tiles_[i][j];
+
       if (tile.type == 0)
       {
         continue;

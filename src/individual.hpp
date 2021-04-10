@@ -50,12 +50,13 @@ private:
   int view_distance_{1};
   glm::dvec2 position_{0,0};
   glm::dvec2 velocity_{0,0};
+  Tile* tile_{nullptr};
   double speed_{0.05};
-  double radius_{0.005};
+  double radius_{0.001};
   GameOfLife* game_;
   static int instances;
 
-  void EnforcePeriodicity();
+  void EnforceWalls();
 };
 
 #endif

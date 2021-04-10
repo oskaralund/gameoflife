@@ -58,7 +58,7 @@ void GameOfLife::Move(double elapsed_time)
     for (auto& individual : individuals_)
     {
       individual->Move(dt_);
-      individual->ReactToTile();
+      //individual->ReactToTile();
     }
 
     time_accumulator_ -= dt_;

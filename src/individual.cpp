@@ -14,34 +14,45 @@ Individual::Individual(GameOfLife* game)
   : game_(game)
 {
   id_ = Individual::instances++;
+  tile_ = GetCurrentTile();
 }
 
 void Individual::Move(double dt)
 {
+  auto tile = GetCurrentTile();
+  if (tile_ != tile)
+  {
+    tile_ = tile;
+    ReactToTile();
+  }
   position_ += dt*velocity_;
-  EnforcePeriodicity();
+  EnforceWalls();
 }
 
-void Individual::EnforcePeriodicity()
+void Individual::EnforceWalls()
 {
   if (position_.x < -1)
   {
-    position_.x = 1.0;
+    position_.x = -1.0;
+    velocity_.x = glm::abs(velocity_.x);
   }
 
   if (position_.x > 1)
   {
-    position_.x = -1.0;
+    position_.x = 1.0;
+    velocity_.x = -glm::abs(velocity_.x);
   }
 
   if (position_.y < -1)
   {
-    position_.y = 1.0;
+    position_.y = -1.0;
+    velocity_.y = glm::abs(velocity_.y);
   }
 
   if (position_.y > 1)
   {
-    position_.y = -1.0;
+    position_.y = 1.0;
+    velocity_.y = -glm::abs(velocity_.y);
   }
 
 }

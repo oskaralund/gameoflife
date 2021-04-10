@@ -9,10 +9,8 @@
 
 void Ant::Move(double dt)
 {
-  food_scent_ -= 0.1*dt;
-  food_scent_ = glm::max(food_scent_, 0.0);
-  colony_scent_ -= 0.1*dt;
-  colony_scent_ = glm::max(colony_scent_, 0.0);
+  food_scent_ /= 1+dt;
+  colony_scent_ /= 1+dt;
   LeaveScent();
 
   if (time_accumulator_ > turning_time_)
@@ -47,10 +45,13 @@ void Ant::ReactToTile()
       food_scent_ = 1.0;
       SetCurrentTileType(Ant::TileType::Basic);
       break;
+
     case Ant::TileType::Colony:
       carrying_food_ = false;
       colony_scent_ = 1.0;
+      food_scent_ = 0.0;
       break;
+
     default:
       break;
   }
@@ -111,43 +112,42 @@ void Ant::SniffForFood()
   int max_col = glm::min(my_j+1, GetGame()->GetNumCols()-1);
   int min_col = glm::max(my_j-1, 0);
 
-  const Tile* target = nullptr;
-  double scent = 0.0;
+  Tile* my_tile = GetCurrentTile();
+  Tile* smelliest_tile = nullptr;
+  double max_scent = 0.0;
   for (int i = min_row; i <= max_row; ++i)
   {
     for (int j = min_col; j <= max_col; ++j)
     {
-      if (i == my_i && j == my_j)
-        continue;
-
       const auto tile = GetGame()->GetTile(i,j);
-      if (!tile->data)
-        continue;
+      if (tile->type == TileType::Food)
+      {
+        GoToward(GetTileCenter(*tile));
+        return;
+      }
 
       const auto data = tile->GetData<TileData>();
+      if (!data)
+        continue;
 
-      if (data->food_scent > scent)
+      if (data->food_scent > max_scent)
       {
-        scent = data->food_scent;
-        target = tile;
+        smelliest_tile = tile;
+        max_scent = data->food_scent;
       }
     }
   }
 
-  auto my_tile = GetCurrentTile();
-  if (my_tile->data)
+  if (smelliest_tile == my_tile)
   {
-    auto my_tile_data = my_tile->GetData<TileData>();
-    if (scent <= my_tile_data->food_scent && my_tile->type != Ant::TileType::Food)
-    {
-      my_tile_data->food_scent = 0.0;
-      return;
-    }
+    auto data = my_tile->GetData<TileData>();
+    data->food_scent = 0.0;
+    return;
   }
 
-  if (target)
+  if (smelliest_tile)
   {
-    GoToward(GetTileCenter(*target));
+    GoToward(GetTileCenter(*smelliest_tile));
   }
 }
 
@@ -167,7 +167,7 @@ void Ant::SniffForColony()
     for (int j = min_col; j <= max_col; ++j)
     {
       const auto tile = GetGame()->GetTile(i,j);
-      if (tile->type == TileType::Food)
+      if (tile->type == TileType::Colony)
       {
         GoToward(GetTileCenter(*tile));
         return;

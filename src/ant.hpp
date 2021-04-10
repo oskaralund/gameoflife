@@ -15,7 +15,7 @@ public:
     Food,
     Colony,
     FoodScent,
-    HomeScent
+    HomeScent,
   };
 
   struct TileData {
