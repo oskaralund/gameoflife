@@ -12,11 +12,8 @@
 struct Tile {
   int row;
   int col;
-  int type;
-  double timer_length;
-  double timer;
-  bool timer_enabled;
-  bool fade;
+  int type = 0;
+  uint8_t color[4] = {0, 0, 0, 255};
   std::shared_ptr<void> data = nullptr;
   std::function<void(double)> update = nullptr;
 
@@ -47,6 +44,7 @@ private:
   double dy_{2.0/100.0};
   double dt_{0.01};
   double time_accumulator_{0.0};
+  double time_factor_{1.0};
   std::vector<std::unique_ptr<Individual>> individuals_;
   std::vector<std::vector<Tile>> tiles_;
 

@@ -31,9 +31,7 @@ public:
 
 protected:
   void SetCurrentTileType(int) const;
-  void SetCurrentTileTimer(double) const;
   void SetCurrentTileColor(uint8_t color[4]) const;
-  void SetCurrentTileFade(bool fade) const;
   int GetId() const;
   Tile* GetCurrentTile() const;
   Tile* GetAdjacentTile(Direction) const;

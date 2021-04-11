@@ -9,9 +9,8 @@
 
 void Ant::Move(double dt)
 {
-  food_scent_ /= 1+dt;
-  colony_scent_ /= 1+dt;
-  LeaveScent();
+  food_scent_ *= glm::exp(-0.1*dt);
+  colony_scent_ *= glm::exp(-0.1*dt);
 
   if (time_accumulator_ > turning_time_)
   {
@@ -25,6 +24,7 @@ void Ant::Move(double dt)
 
 void Ant::ReactToTile()
 {
+  LeaveScent();
   if (!carrying_food_)
   {
     SniffForFood();
@@ -101,6 +101,12 @@ void Ant::LeaveScent() const
       tile_data->colony_scent = colony_scent_;
     }
   }
+
+  auto tile_data = tile->GetData<TileData>();
+  tile->color[0] = tile_data->food_scent*255;
+  tile->color[1] = 0;
+  tile->color[2] = tile_data->colony_scent*255;
+  tile->color[3] = 255;
 }
 
 void Ant::SniffForFood()

@@ -25,12 +25,7 @@ void GameOfLife::Initialize()
     tiles_[i].reserve(num_cols_);
     for (int j = 0; j < num_cols_; ++j)
     {
-      const int type = 0;
-      const double timer_length = 0.0;
-      const double timer = 0.0;
-      const bool timer_enabled = false;
-      const bool fade = false;
-      Tile tile = {i, j, type, timer_length, timer, timer_enabled, fade};
+      Tile tile = {i, j};
       tiles_[i].push_back(tile);
     }
   }
@@ -47,24 +42,39 @@ Tile* GameOfLife::GetTile(int i, int j)
 void GameOfLife::SetTileType(int i, int j, int type)
 {
   tiles_[i][j].type = type;
+
+  if (type == 0)
+  {
+    tiles_[i][j].color[0] = 0;
+    tiles_[i][j].color[1] = 0;
+    tiles_[i][j].color[2] = 0;
+    tiles_[i][j].color[3] = 255;
+  }
+
+  if (type == 1)
+  {
+    tiles_[i][j].color[0] = 255;
+    tiles_[i][j].color[1] = 0;
+    tiles_[i][j].color[2] = 255;
+    tiles_[i][j].color[3] = 255;
+  }
 }
 
 void GameOfLife::Move(double elapsed_time)
 {
-  time_accumulator_ += 10*elapsed_time;
+  time_accumulator_ += time_factor_*elapsed_time;
 
   while (time_accumulator_ - dt_ > 0)
   {
     for (auto& individual : individuals_)
     {
       individual->Move(dt_);
-      //individual->ReactToTile();
     }
 
     time_accumulator_ -= dt_;
   }
 
-  UpdateTiles(elapsed_time);
+  UpdateTiles(time_factor_*elapsed_time);
 }
 
 void GameOfLife::UpdateTiles(double dt)
@@ -73,17 +83,6 @@ void GameOfLife::UpdateTiles(double dt)
   {
     for (int j = 0; j < num_cols_; ++j)
     {
-      if (tiles_[i][j].timer_enabled)
-      {
-        tiles_[i][j].timer -= dt;
-
-        if (tiles_[i][j].timer < 0)
-        {
-          tiles_[i][j].type = 0;
-          tiles_[i][j].timer_enabled = false;
-        }
-      }
-
       if (tiles_[i][j].update)
       {
         tiles_[i][j].update(dt);

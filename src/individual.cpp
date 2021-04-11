@@ -119,23 +119,7 @@ void Individual::SetCurrentTileType(int type) const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
-  game_->tiles_[i][j].type = type;
-}
-
-void Individual::SetCurrentTileTimer(double t) const
-{
-  int i, j;
-  GetCurrentTileCoords(&i, &j);
-  game_->tiles_[i][j].timer_length = t;
-  game_->tiles_[i][j].timer = t;
-  game_->tiles_[i][j].timer_enabled = true;
-}
-
-void Individual::SetCurrentTileFade(bool fade) const
-{
-  int i, j;
-  GetCurrentTileCoords(&i, &j);
-  game_->tiles_[i][j].fade = fade;
+  game_->SetTileType(i, j, type);
 }
 
 Tile* Individual::GetAdjacentTile(Direction dir) const

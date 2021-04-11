@@ -55,6 +55,14 @@ void Controller::KeyPressed(sf::Event event)
       window_->close();
       break;
 
+    case sf::Keyboard::Up:
+      game_->time_factor_ *= 2;
+      break;
+
+    case sf::Keyboard::Down:
+      game_->time_factor_ /= 2;
+      break;
+
     default:
       break;
   }
