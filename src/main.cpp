@@ -6,13 +6,13 @@
 
 int main()
 {
-  sf::RenderWindow window{ sf::VideoMode(200, 200), "Game of Life" };
+  sf::RenderWindow window{ sf::VideoMode(1000, 1000), "Game of Life" };
   //GameOfLife game{20,20};
   //game.AddAntColony(5);
   //GameOfLife game{100,100};
   //game.AddAntColony(200);
-  GameOfLife game(500,500);
-  game.AddAntColony(1500);
+  GameOfLife game(200,200);
+  game.AddAntColony(10000);
   Renderer renderer{&window, &game};
   Controller controller(&game, &window, &renderer);
 

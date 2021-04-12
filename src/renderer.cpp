@@ -15,15 +15,18 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
 
   grid_va_.resize(game_->num_cols_*game_->num_rows_*4);
 
+  const auto dx = game_->dx_;
+  const auto dy = game_->dy_;
+  const auto padding = 0.3;
   for (int i = 0; i < game_->num_rows_; ++i)
   {
     for (int j = 0; j < game_->num_cols_; ++j)
     {
-      sf::Vertex* quad = &grid_va_[(i + j*game_->num_cols_)*4];
-      quad[0].position = sf::Vector2f(-1 + j*game_->dx_, -1 + i*game_->dy_);
-      quad[1].position = sf::Vector2f(-1 + (j+1)*game_->dx_, -1 + i*game_->dy_);
-      quad[2].position = sf::Vector2f(-1 + (j+1)*game_->dx_, -1 + (i+1)*game_->dy_);
-      quad[3].position = sf::Vector2f(-1 + j*game_->dx_, -1 + (i+1)*game_->dy_);
+      sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows_)*4];
+      quad[0].position = sf::Vector2f(-1 + (j+padding)*dx, -1 + (i+padding)*dy);
+      quad[1].position = sf::Vector2f(-1 + (j+1-padding)*dx, -1 + (i+padding)*dy);
+      quad[2].position = sf::Vector2f(-1 + (j+1-padding)*dx, -1 + (i+1-padding)*dy);
+      quad[3].position = sf::Vector2f(-1 + (j+padding)*dx, -1 + (i+1-padding)*dy);
 
       quad[0].color = sf::Color::Black;
       quad[1].color = sf::Color::Black;
@@ -41,6 +44,7 @@ void Renderer::Render()
   window_->setView(view_);
 
   DrawTiles();
+  DrawOuterWalls();
   for (const auto& individual : game_->individuals_)
   {
     individual->Render(window_);
@@ -87,47 +91,40 @@ void Renderer::DrawGrid()
 
 }
 
+void Renderer::DrawOuterWalls()
+{
+  sf::Vertex lines[] =
+  {
+    sf::Vertex(sf::Vector2f(-1, -1)),
+    sf::Vertex(sf::Vector2f(1, -1)),
+    sf::Vertex(sf::Vector2f(-1, 1)),
+    sf::Vertex(sf::Vector2f(1, 1)),
+    sf::Vertex(sf::Vector2f(1, -1)),
+    sf::Vertex(sf::Vector2f(1, 1)),
+    sf::Vertex(sf::Vector2f(-1, -1)),
+    sf::Vertex(sf::Vector2f(-1, 1))
+  };
+  window_->draw(lines, 8, sf::Lines);
+}
+
 void Renderer::DrawTiles()
 {
-  for (int i = 1; i < game_->num_rows_-1; ++i)
+  for (int i = 0; i < game_->num_rows_; ++i)
   {
-    for (int j = 1; j < game_->num_cols_-1; ++j)
+    for (int j = 0; j < game_->num_cols_; ++j)
     {
-      sf::Vertex* quad = &grid_va_[(i + j*game_->num_cols_)*4];
+      sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows_)*4];
 
       auto tile = game_->tiles_[i][j];
-      auto n = game_->tiles_[i-1][j];
-      auto s = game_->tiles_[i+1][j];
-      auto e = game_->tiles_[i][j+1];
-      auto w = game_->tiles_[i][j-1];
-      auto ne = game_->tiles_[i-1][j+1];
-      auto nw = game_->tiles_[i-1][j-1];
-      auto sw = game_->tiles_[i+1][j-1];
-      auto se = game_->tiles_[i+1][j+1];
 
       sf::Color color;
-      color.r = (tile.color[0]+n.color[0]+nw.color[0]+w.color[0])/4;
-      color.g = (tile.color[1]+n.color[1]+nw.color[1]+w.color[1])/4;
-      color.b = (tile.color[2]+n.color[2]+nw.color[2]+w.color[2])/4;
-      color.a = (tile.color[3]+n.color[3]+nw.color[3]+w.color[3])/4;
+      color.r = tile.color[0];
+      color.g = tile.color[1];
+      color.b = tile.color[2];
+      color.a = tile.color[3];
       quad[0].color = color;
-
-      color.r = (tile.color[0]+n.color[0]+ne.color[0]+e.color[0])/4;
-      color.g = (tile.color[1]+n.color[1]+ne.color[1]+e.color[1])/4;
-      color.b = (tile.color[2]+n.color[2]+ne.color[2]+e.color[2])/4;
-      color.a = (tile.color[3]+n.color[3]+ne.color[3]+e.color[3])/4;
       quad[1].color = color;
-
-      color.r = (tile.color[0]+s.color[0]+se.color[0]+e.color[0])/4;
-      color.g = (tile.color[1]+s.color[1]+se.color[1]+e.color[1])/4;
-      color.b = (tile.color[2]+s.color[2]+se.color[2]+e.color[2])/4;
-      color.a = (tile.color[3]+s.color[3]+se.color[3]+e.color[3])/4;
       quad[2].color = color;
-
-      color.r = (tile.color[0]+s.color[0]+sw.color[0]+w.color[0])/4;
-      color.g = (tile.color[1]+s.color[1]+sw.color[1]+w.color[1])/4;
-      color.b = (tile.color[2]+s.color[2]+sw.color[2]+w.color[2])/4;
-      color.a = (tile.color[3]+s.color[3]+sw.color[3]+w.color[3])/4;
       quad[3].color = color;
     }
   }

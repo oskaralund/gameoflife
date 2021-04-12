@@ -15,7 +15,7 @@ struct Tile {
   int type = 0;
   uint8_t color[4] = {0, 0, 0, 255};
   std::shared_ptr<void> data = nullptr;
-  std::function<void(double)> update = nullptr;
+  std::function<void(Tile*, double)> update = nullptr;
 
   template<typename T>
   auto GetData()

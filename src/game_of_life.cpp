@@ -85,7 +85,7 @@ void GameOfLife::UpdateTiles(double dt)
     {
       if (tiles_[i][j].update)
       {
-        tiles_[i][j].update(dt);
+        tiles_[i][j].update(&tiles_[i][j], dt);
       }
     }
   }

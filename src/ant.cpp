@@ -66,7 +66,7 @@ void Ant::RandomDirectionAdjustment()
 void Ant::Render(sf::RenderWindow* window) const
 {
   sf::CircleShape circ(GetRadius());
-  carrying_food_ ? circ.setFillColor(sf::Color::Blue) : circ.setFillColor(sf::Color::Green);
+  circ.setFillColor(sf::Color::Green);
   circ.setPosition(GetPosition().x, GetPosition().y);
   circ.setOrigin(circ.getRadius(), circ.getRadius());
   window->draw(circ);
@@ -87,6 +87,7 @@ void Ant::LeaveScent() const
     tile_data->food_scent = food_scent_;
     tile_data->colony_scent = colony_scent_;
     tile->data = tile_data;
+    tile->update = TileUpdate;
   }
   else
   {
@@ -103,9 +104,9 @@ void Ant::LeaveScent() const
   }
 
   auto tile_data = tile->GetData<TileData>();
-  tile->color[0] = tile_data->food_scent*255;
+  tile->color[0] = tile_data->colony_scent*255;
   tile->color[1] = 0;
-  tile->color[2] = tile_data->colony_scent*255;
+  tile->color[2] = tile_data->food_scent*255;
   tile->color[3] = 255;
 }
 
@@ -195,5 +196,20 @@ void Ant::SniffForColony()
   if (target)
   {
     GoToward(GetTileCenter(*target));
+  }
+}
+
+void TileUpdate(Tile* tile, double dt)
+{
+  auto tile_data = tile->GetData<Ant::TileData>();
+  tile_data->food_scent *= glm::exp(-0.05*dt);
+  tile_data->colony_scent *= glm::exp(-0.05*dt);
+
+  if (tile->type == Ant::TileType::Basic)
+  {
+    tile->color[0] = tile_data->colony_scent*255;
+    tile->color[1] = 0;
+    tile->color[2] = tile_data->food_scent*255;
+    tile->color[3] = 255;
   }
 }

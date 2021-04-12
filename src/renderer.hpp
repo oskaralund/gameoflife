@@ -22,6 +22,7 @@ private:
 
   void DrawGrid();
   void DrawTiles();
+  void DrawOuterWalls();
 };
 
 #endif

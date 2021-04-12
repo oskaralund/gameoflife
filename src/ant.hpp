@@ -47,4 +47,6 @@ private:
   void SniffForColony();
 };
 
+void TileUpdate(Tile*, double);
+
 #endif
