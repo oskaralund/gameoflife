@@ -5,6 +5,8 @@
 
 #include "individual.hpp"
 
+struct Tile;
+
 class Ant : public Individual
 {
 public:
@@ -38,7 +40,6 @@ private:
   double food_scent_{0.0};
   double colony_scent_{1.0};
   bool carrying_food_{false};
-  glm::dvec2 colony_pos_{0.0, 0.0};
 
   void RandomDirectionAdjustment();
   void InteractWithObjects();

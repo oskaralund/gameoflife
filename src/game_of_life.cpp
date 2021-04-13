@@ -104,7 +104,6 @@ void GameOfLife::AddAntColony(int num_ants)
 
     auto theta = glm::linearRand(0.0, 2.0*3.14);
     ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
-    ant->SetColonyPosition(colony_pos);
     individuals_.push_back(std::move(ant));
   }
 
@@ -127,7 +126,9 @@ int GameOfLife::GetNumRows() const
 {
   return num_rows_;
 }
+
 int GameOfLife::GetNumCols() const
 {
   return num_cols_;
 }
+

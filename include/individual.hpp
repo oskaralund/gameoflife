@@ -2,8 +2,11 @@
 #define INDIVIDUAL_HPP_
 
 #include <vector>
+#include <array>
 
 #include <glm/glm.hpp>
+
+#include "adjacent_tiles.hpp"
 
 class GameOfLife;
 struct Tile;
@@ -31,17 +34,13 @@ public:
 
 protected:
   void SetCurrentTileType(int) const;
-  void SetCurrentTileColor(uint8_t color[4]) const;
+  void SetCurrentTileColor(const std::array<uint8_t, 4>& color) const;
   int GetId() const;
   Tile* GetCurrentTile() const;
-  Tile* GetAdjacentTile(Direction) const;
-  Direction GetCurrentDirection() const;
-  void GetOrthogonalDirections(Direction* a, Direction* b) const;
   glm::dvec2 GetTileCenter(const Tile&);
-  glm::dvec2 DirectionToVector(Direction dir) const;
   void GoToward(glm::dvec2 target);
-  std::vector<Tile*> GetSurroundingTiles() const;
   void GetCurrentTileCoords(int*, int*) const;
+  AdjacentTiles GetAdjacentTiles() const;
 
 private:
   int id_;

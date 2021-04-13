@@ -6,6 +6,7 @@
 #include <glm/gtc/random.hpp>
 
 #include "game_of_life.hpp"
+#include "tile.hpp"
 
 void Ant::Move(double dt)
 {
@@ -72,11 +73,6 @@ void Ant::Render(sf::RenderWindow* window) const
   window->draw(circ);
 }
 
-void Ant::SetColonyPosition(glm::dvec2 pos)
-{
-  colony_pos_ = pos;
-}
-
 void Ant::LeaveScent() const
 {
   auto tile = GetCurrentTile();
@@ -104,45 +100,44 @@ void Ant::LeaveScent() const
   }
 
   auto tile_data = tile->GetData<TileData>();
-  tile->color[0] = tile_data->colony_scent*255;
-  tile->color[1] = 0;
-  tile->color[2] = tile_data->food_scent*255;
-  tile->color[3] = 255;
+  const uint8_t r = tile_data->colony_scent*255;
+  const uint8_t g = 0;
+  const uint8_t b = tile_data->food_scent;
+  const uint8_t a = 255;
+  SetCurrentTileColor({r, g, b, a});
 }
 
 void Ant::SniffForFood()
 {
   int my_i, my_j;
   GetCurrentTileCoords(&my_i, &my_j);
-  int max_row = glm::min(my_i+1, GetGame()->GetNumRows()-1);
-  int min_row = glm::max(my_i-1, 0);
-  int max_col = glm::min(my_j+1, GetGame()->GetNumCols()-1);
-  int min_col = glm::max(my_j-1, 0);
+
+  //auto adjacent_tiles = GameOfLife::AdjacentTiles(GetGame(), my_i, my_j);
 
   Tile* my_tile = GetCurrentTile();
   Tile* smelliest_tile = nullptr;
   double max_scent = 0.0;
-  for (int i = min_row; i <= max_row; ++i)
+  for (auto& tile : GetAdjacentTiles())
   {
-    for (int j = min_col; j <= max_col; ++j)
+    //auto tile = *it;
+    if (tile.type == TileType::Food)
     {
-      const auto tile = GetGame()->GetTile(i,j);
-      if (tile->type == TileType::Food)
-      {
-        GoToward(GetTileCenter(*tile));
-        return;
-      }
-
-      const auto data = tile->GetData<TileData>();
-      if (!data)
-        continue;
-
-      if (data->food_scent > max_scent)
-      {
-        smelliest_tile = tile;
-        max_scent = data->food_scent;
-      }
+      GoToward(GetTileCenter(tile));
+      return;
     }
+
+    auto data = tile.GetData<TileData>();
+    if (!data)
+    {
+      continue;
+    }
+
+    if (data->food_scent > max_scent)
+    {
+      smelliest_tile = &tile;
+      max_scent = data->food_scent;
+    }
+
   }
 
   if (smelliest_tile == my_tile)

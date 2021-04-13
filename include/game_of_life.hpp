@@ -5,24 +5,12 @@
 #include <memory>
 #include <functional>
 
-#include "individual.hpp"
+#include <glm/glm.hpp>
+
+#include "tile.hpp"
 #include "renderer.hpp"
 #include "controller.hpp"
-
-struct Tile {
-  int row;
-  int col;
-  int type = 0;
-  uint8_t color[4] = {0, 0, 0, 255};
-  std::shared_ptr<void> data = nullptr;
-  std::function<void(Tile*, double)> update = nullptr;
-
-  template<typename T>
-  auto GetData()
-  {
-    return std::static_pointer_cast<T>(data);
-  }
-};
+#include "individual.hpp"
 
 class GameOfLife
 {
@@ -37,12 +25,15 @@ public:
   int GetNumRows() const;
   int GetNumCols() const;
 
+  class AdjacentTiles;
+
+
 private:
   int num_rows_{100};
   int num_cols_{100};
   double dx_{2.0/100.0};
   double dy_{2.0/100.0};
-  double dt_{0.01};
+  double dt_{1.0/60.0};
   double time_accumulator_{0.0};
   double time_factor_{1.0};
   std::vector<std::unique_ptr<Individual>> individuals_;

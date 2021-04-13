@@ -7,6 +7,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "game_of_life.hpp"
+#include "tile.hpp"
 
 int Individual::instances = 0;
 
@@ -122,93 +123,6 @@ void Individual::SetCurrentTileType(int type) const
   game_->SetTileType(i, j, type);
 }
 
-Tile* Individual::GetAdjacentTile(Direction dir) const
-{
-  int i, j;
-  GetCurrentTileCoords(&i, &j);
-
-  switch (dir)
-  {
-    case Direction::Up:
-      i = (game_->num_rows_+i-1) % game_->num_rows_;
-      break;
-    case Direction::Down:
-      i = (i+1) % game_->num_rows_;
-      break;
-    case Direction::Left:
-      j = (game_->num_cols_+j-1) % game_->num_cols_;
-      break;
-    case Direction::Right:
-      j = (j+1) % game_->num_cols_;
-      break;
-    default:
-      break;
-  }
-
-  return &game_->tiles_[i][j];
-}
-
-Individual::Direction Individual::GetCurrentDirection() const
-{
-  const double epsilon = 1e-10;
-  if (glm::length(velocity_) < epsilon)
-  {
-    return Direction::None;
-  }
-
-  const auto dir = glm::normalize(velocity_);
-
-  if (glm::angle(dir, {1.0, 0.0}) < 3.14/4)
-  {
-    return Direction::Right;
-  }
-  else if (glm::angle(dir, {0.0, 1.0}) < 3.14/4)
-  {
-    return Direction::Down;
-  }
-  else if (glm::angle(dir, {-1.0, 0.0}) < 3.14/4)
-  {
-    return Direction::Left;
-  }
-  else
-  {
-    return Direction::Up;
-  }
-}
-
-void Individual::GetOrthogonalDirections(Direction* a, Direction* b) const
-{
-  const auto current_dir = GetCurrentDirection();
-
-  if (current_dir == Direction::Up || current_dir == Direction::Down)
-  {
-    *a = Direction::Left;
-    *b = Direction::Right;
-  }
-  else
-  {
-    *a = Direction::Up;
-    *b = Direction::Down;
-  }
-}
-
-glm::dvec2 Individual::DirectionToVector(Direction dir) const
-{
-  switch (dir)
-  {
-    case Direction::Up:
-      return {0.0, -1.0};
-    case Direction::Down:
-      return {0.0, 1.0};
-    case Direction::Left:
-      return {-1.0, 0.0};
-    case Direction::Right:
-      return {1.0, 0.0};
-    default:
-      return {0.0, 0.0};
-  }
-}
-
 void Individual::GoToward(glm::dvec2 target)
 {
   const auto dir = target - position_;
@@ -234,30 +148,18 @@ int Individual::GetId() const
   return id_;
 }
 
-std::vector<Tile*> Individual::GetSurroundingTiles() const
+void Individual::SetCurrentTileColor(const std::array<uint8_t, 4>& color) const
 {
-  int my_i, my_j;
-  GetCurrentTileCoords(&my_i, &my_j);
-  int max_row = glm::min(my_i+view_distance_, game_->num_rows_-1);
-  int min_row = glm::max(my_i-view_distance_, 0);
-  int max_col = glm::min(my_j+view_distance_, game_->num_cols_-1);
-  int min_col = glm::max(my_j-view_distance_, 0);
+  auto tile = GetCurrentTile();
+  tile->color[0] = color[0];
+  tile->color[1] = color[1];
+  tile->color[2] = color[2];
+  tile->color[3] = color[3];
+}
 
-  std::vector<Tile*> surrounding_tiles;
-  const int num_tiles = 4*(view_distance_+1)*(view_distance_+1);
-  surrounding_tiles.reserve(num_tiles);
-
-  for (int i = min_row; i <= max_row; ++i)
-  {
-    for (int j = min_col; j <= max_col; ++j)
-    {
-      if (i == my_i && j == my_j)
-      {
-        continue;
-      }
-      surrounding_tiles.push_back(&game_->tiles_[i][j]);
-    }
-  }
-
-  return surrounding_tiles;
+AdjacentTiles Individual::GetAdjacentTiles() const
+{
+  int i, j;
+  GetCurrentTileCoords(&i, &j);
+  return AdjacentTiles(game_, i, j);
 }
