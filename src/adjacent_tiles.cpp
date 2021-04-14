@@ -1,6 +1,9 @@
 #include "adjacent_tiles.hpp"
 
+#include <glm/glm.hpp>
+
 #include "game_of_life.hpp"
+
 
 AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(GameOfLife* game, int i, int j)
   : game_(game)
@@ -9,7 +12,7 @@ AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(GameOfLife* game, in
 {
   max_row_ = glm::min(i+1, game->GetNumRows()-1);
   min_row_ = glm::max(i-1, 0);
-  max_col_ = glm::min(j+1, game->GetNumRows()-1);
+  max_col_ = glm::min(j+1, game->GetNumCols()-1);
   min_col_ = glm::max(j-1, 0);
   i_ = min_row_;
   j_ = min_col_;
@@ -24,11 +27,6 @@ AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(Tile* tile)
 
 AdjacentTiles::AdjacentTilesIterator& AdjacentTiles::AdjacentTilesIterator::operator++()
 {
-  if (j_ == max_col_ && i_ == max_row_)
-  {
-    ptr_ = game_->GetTile(center_i_, center_j_);
-  }
-
   if (j_ == max_col_)
   {
     j_ = min_col_;
@@ -52,7 +50,14 @@ AdjacentTiles::AdjacentTilesIterator& AdjacentTiles::AdjacentTilesIterator::oper
     }
   }
 
-  ptr_ = game_->GetTile(i_, j_);
+  if (i_ == max_row_+1)
+  {
+    ptr_ = game_->GetTile(center_i_, center_j_);
+  }
+  else
+  {
+    ptr_ = game_->GetTile(i_, j_);
+  }
 
   return *this;
 }
@@ -64,3 +69,12 @@ AdjacentTiles::AdjacentTilesIterator AdjacentTiles::AdjacentTilesIterator::opera
   return tmp;
 }
 
+AdjacentTiles::AdjacentTilesIterator AdjacentTiles::begin()
+{
+  return AdjacentTilesIterator(game_, i_, j_);
+}
+
+AdjacentTiles::AdjacentTilesIterator AdjacentTiles::end()
+{
+  return AdjacentTilesIterator(game_->GetTile(i_, j_));
+}

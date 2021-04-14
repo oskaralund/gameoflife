@@ -8,9 +8,10 @@
 #include <glm/glm.hpp>
 
 #include "tile.hpp"
-#include "renderer.hpp"
-#include "controller.hpp"
 #include "individual.hpp"
+
+class Controller;
+class Renderer;
 
 class GameOfLife
 {
@@ -24,9 +25,6 @@ public:
 
   int GetNumRows() const;
   int GetNumCols() const;
-
-  class AdjacentTiles;
-
 
 private:
   int num_rows_{100};

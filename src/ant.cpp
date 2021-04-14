@@ -4,6 +4,7 @@
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/random.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "game_of_life.hpp"
 #include "tile.hpp"
@@ -112,14 +113,13 @@ void Ant::SniffForFood()
   int my_i, my_j;
   GetCurrentTileCoords(&my_i, &my_j);
 
-  //auto adjacent_tiles = GameOfLife::AdjacentTiles(GetGame(), my_i, my_j);
-
   Tile* my_tile = GetCurrentTile();
-  Tile* smelliest_tile = nullptr;
-  double max_scent = 0.0;
+  auto my_data = my_tile->GetData<TileData>();
+  double max_scent = my_data ? my_data->food_scent : 0.0;
+  Tile* smelliest_tile = my_data ? my_tile : nullptr;
+
   for (auto& tile : GetAdjacentTiles())
   {
-    //auto tile = *it;
     if (tile.type == TileType::Food)
     {
       GoToward(GetTileCenter(tile));
@@ -127,10 +127,9 @@ void Ant::SniffForFood()
     }
 
     auto data = tile.GetData<TileData>();
+
     if (!data)
-    {
       continue;
-    }
 
     if (data->food_scent > max_scent)
     {

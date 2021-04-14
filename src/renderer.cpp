@@ -1,7 +1,6 @@
 #include "renderer.hpp"
 
 #include "game_of_life.hpp"
-#include "ant.hpp"
 
 Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   : window_(window)

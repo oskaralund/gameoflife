@@ -2,6 +2,7 @@
 #define ADJACENT_TILES_HPP_
 
 #include <iterator>
+#include <cstddef>
 
 #include "tile.hpp"
 
@@ -10,6 +11,8 @@ class GameOfLife;
 class AdjacentTiles
 {
 public:
+  AdjacentTiles(GameOfLife* game, int i, int j) : game_(game), i_(i), j_(j) {}
+
   struct AdjacentTilesIterator
   {
     using iterator_category = std::forward_iterator_tag;
@@ -43,9 +46,8 @@ public:
     int j_ = 0;
   };
 
-  AdjacentTiles(GameOfLife* game, int i, int j) : game_(game), i_(i), j_(j) {}
-  AdjacentTilesIterator begin() { return AdjacentTilesIterator(game_, i_, j_); }
-  AdjacentTilesIterator end() { return AdjacentTilesIterator(game_, i_, j_); }
+  AdjacentTilesIterator begin();
+  AdjacentTilesIterator end();
 
 private:
   GameOfLife* game_;
