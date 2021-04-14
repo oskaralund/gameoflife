@@ -1,3 +1,8 @@
+/* A GameOfLife object stores a grid of Tile objects and a vector
+ * of Individual objects. The grid lives on the square [-1,1]x[-1,1].
+ * The GameOfLife can step forward in time through the Move function.
+*/
+
 #ifndef GAME_OF_LIFE_HPP_
 #define GAME_OF_LIFE_HPP_
 
@@ -16,10 +21,10 @@ class Renderer;
 class GameOfLife
 {
 public:
-  GameOfLife();
-  GameOfLife(int rows, int cols);
-  void Move(double elapsed_time);
-  void AddAntColony(int num_ants);
+  GameOfLife(); // Constructs a 100x100 GameOfLife object.
+  GameOfLife(int rows, int cols); // Constructs a rows x cols GameOfLife object.
+  void Move(double elapsed_time); // Move forward in time.
+  void AddAntColony(int num_ants); // Add an ant colony at the center of the map.
   void SetTileType(int i, int j, int type);
   Tile* GetTile(int, int);
 
