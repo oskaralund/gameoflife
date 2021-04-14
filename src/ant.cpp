@@ -110,9 +110,6 @@ void Ant::LeaveScent() const
 
 void Ant::SniffForFood()
 {
-  int my_i, my_j;
-  GetCurrentTileCoords(&my_i, &my_j);
-
   Tile* my_tile = GetCurrentTile();
   auto my_data = my_tile->GetData<TileData>();
   double max_scent = my_data ? my_data->food_scent : 0.0;
@@ -154,36 +151,25 @@ void Ant::SniffForFood()
 
 void Ant::SniffForColony()
 {
-  int my_i, my_j;
-  GetCurrentTileCoords(&my_i, &my_j);
-  int max_row = glm::min(my_i+1, GetGame()->GetNumRows()-1);
-  int min_row = glm::max(my_i-1, 0);
-  int max_col = glm::min(my_j+1, GetGame()->GetNumCols()-1);
-  int min_col = glm::max(my_j-1, 0);
-
   const Tile* target = nullptr;
   double scent = 0.0;
-  for (int i = min_row; i <= max_row; ++i)
+  for (auto& tile : GetAdjacentTiles())
   {
-    for (int j = min_col; j <= max_col; ++j)
+    if (tile.type == TileType::Colony)
     {
-      const auto tile = GetGame()->GetTile(i,j);
-      if (tile->type == TileType::Colony)
-      {
-        GoToward(GetTileCenter(*tile));
-        return;
-      }
-      if (!tile->data)
-      {
-        continue;
-      }
-      const auto data = tile->GetData<TileData>();
+      GoToward(GetTileCenter(tile));
+      return;
+    }
 
-      if (data->colony_scent > scent)
-      {
-        scent = data->colony_scent;
-        target = tile;
-      }
+    const auto data = tile.GetData<TileData>();
+
+    if (!data)
+      continue;
+
+    if (data->colony_scent > scent)
+    {
+      scent = data->colony_scent;
+      target = &tile;
     }
   }
 

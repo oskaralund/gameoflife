@@ -11,7 +11,7 @@ int main()
   //game.AddAntColony(10);
   //GameOfLife game{100,100};
   //game.AddAntColony(200);
-  GameOfLife game(200,200);
+  GameOfLife game(400,400);
   game.AddAntColony(1000);
   Renderer renderer{&window, &game};
   Controller controller(&game, &window, &renderer);

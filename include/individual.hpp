@@ -1,3 +1,13 @@
+/* The Individual is one of the basic types used in the Game of Life.
+ * It represents one individual existing inside the [-1,1]x[-1,1] square
+ * on which the Game of Life takes place. An individual has a position
+ * and a velocity. It moves and reacts to the tiles they are on and to
+ * their surrounding tiles.
+ *
+ * This class is meant to be subclassed in order to create individuals
+ * with custom behavior.
+*/
+
 #ifndef INDIVIDUAL_HPP_
 #define INDIVIDUAL_HPP_
 
@@ -19,12 +29,21 @@ namespace sf
 
 class Individual {
 public:
-  enum class Direction { Left = 0, Right, Up, Down, None };
-
+  // Constructs an individual and ties it to a GameOfLife object.
   Individual(GameOfLife*);
+
+  // Moves the Individual based on its velocity. Also calls ReactToTile() if the
+  // individual moves to a new tile. Typically if you override this function you
+  // want to call Individual::Move(dt) at the top of your override.
   virtual void Move(double dt);
+
+  // This function is called whenever the Individual moves to a new tile. By
+  // default it does nothing. Override it to get custom behavior.
   virtual void ReactToTile();
+
+  // Specifies how to render the Individual. Defaults to a green circle.
   virtual void Render(sf::RenderWindow* window) const;
+
   void SetVelocity(glm::dvec2);
   void SetRadius(double);
   double GetRadius() const;
@@ -33,14 +52,24 @@ public:
   GameOfLife* GetGame() const;
 
 protected:
+
+  // Returns a unique integer associated with the individual.
+  int GetId() const;
+
+  // Rotates the individual's velocity toward a target.
+  void GoToward(glm::dvec2 target);
+
+  // Returns a container with tiles adjacent to the individual's current tile.
+  // Can be used in range based for loops, e.g.:
+  //
+  //   for (auto& tile : GetAdjacentTiles()) { DoSomething(tile); }
+  //
+  AdjacentTiles GetAdjacentTiles() const;
+
   void SetCurrentTileType(int) const;
   void SetCurrentTileColor(const std::array<uint8_t, 4>& color) const;
-  int GetId() const;
   Tile* GetCurrentTile() const;
   glm::dvec2 GetTileCenter(const Tile&);
-  void GoToward(glm::dvec2 target);
-  void GetCurrentTileCoords(int*, int*) const;
-  AdjacentTiles GetAdjacentTiles() const;
 
 private:
   int id_;
@@ -54,6 +83,7 @@ private:
   static int instances;
 
   void EnforceWalls();
+  void GetCurrentTileCoords(int*, int*) const;
 };
 
 #endif
