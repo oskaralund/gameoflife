@@ -1,6 +1,6 @@
-/* The Individual is one of the basic types used in the Game of Life.
+/* The Individual is one of the basic types used in the GameOfLife class.
  * It represents one individual existing inside the [-1,1]x[-1,1] square
- * on which the Game of Life takes place. An individual has a position
+ * on which the simulation takes place. An individual has a position
  * and a velocity. It moves and reacts to the tiles they are on and to
  * their surrounding tiles.
  *

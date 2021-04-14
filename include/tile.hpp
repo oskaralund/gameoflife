@@ -1,5 +1,5 @@
-/* The Tile is one of the basic types used in the Game of Life.
- * It represents one tile in the grid of tiles on which the Game of Life
+/* The Tile is one of the basic types used in the GameOfLife class.
+ * It represents one tile in the grid of tiles on which the simulation
  * is taking place.
 */
 
