@@ -28,14 +28,7 @@ void Ant::Move(double dt)
 void Ant::ReactToTile()
 {
   LeaveScent();
-  if (!carrying_food_)
-  {
-    SniffForFood();
-  }
-  else
-  {
-    SniffForColony();
-  }
+  Sniff();
 
   auto tile = GetCurrentTile();
   switch (tile->type)
@@ -102,57 +95,17 @@ void Ant::LeaveScent() const
   }
 }
 
-void Ant::SniffForFood()
+void Ant::Sniff()
 {
   Tile* my_tile = GetCurrentTile();
   auto my_data = my_tile->GetData<TileData>();
-  double max_scent = my_data ? my_data->food_scent : 0.0;
-  Tile* smelliest_tile = my_data ? my_tile : nullptr;
+  double max_scent = carrying_food_ ? my_data->colony_scent : my_data->food_scent;
+  Tile* smelliest_tile = my_tile;
+  auto target_tile_type = carrying_food_ ? TileType::Colony : TileType::Food;
 
   for (auto& tile : GetAdjacentTiles())
   {
-    if (tile.type == TileType::Food)
-    {
-      GoToward(GetTileCenter(tile));
-      return;
-    }
-
-    auto data = tile.GetData<TileData>();
-
-    if (!data)
-      continue;
-
-    if (data->food_scent > max_scent)
-    {
-      smelliest_tile = &tile;
-      max_scent = data->food_scent;
-    }
-
-  }
-
-  if (smelliest_tile == my_tile)
-  {
-    auto data = my_tile->GetData<TileData>();
-    data->food_scent = 0.0;
-    return;
-  }
-
-  if (smelliest_tile)
-  {
-    GoToward(GetTileCenter(*smelliest_tile));
-  }
-}
-
-void Ant::SniffForColony()
-{
-  Tile* my_tile = GetCurrentTile();
-  auto my_data = my_tile->GetData<TileData>();
-  double max_scent = my_data ? my_data->colony_scent : 0.0;
-  Tile* smelliest_tile = my_data ? my_tile : nullptr;
-
-  for (auto& tile : GetAdjacentTiles())
-  {
-    if (tile.type == TileType::Colony)
+    if (tile.type == target_tile_type)
     {
       GoToward(GetTileCenter(tile));
       return;
@@ -163,16 +116,18 @@ void Ant::SniffForColony()
     if (!data)
       continue;
 
-    if (data->colony_scent > max_scent)
+    const double scent = carrying_food_ ? data->colony_scent : data->food_scent;
+    if (scent > max_scent)
     {
-      max_scent = data->colony_scent;
+      max_scent = scent;
       smelliest_tile = &tile;
     }
   }
 
   if (smelliest_tile == my_tile)
   {
-    my_data->colony_scent = 0.0;
+    carrying_food_ ? my_data->colony_scent = 0.0 : my_data->food_scent = 0.0;
+    return;
   }
 
   if (smelliest_tile)

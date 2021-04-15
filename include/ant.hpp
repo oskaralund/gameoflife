@@ -44,8 +44,7 @@ private:
   void RandomDirectionAdjustment();
   void InteractWithObjects();
   void LeaveScent() const;
-  void SniffForFood();
-  void SniffForColony();
+  void Sniff();
 };
 
 void TileUpdate(Tile*, double);
