@@ -89,7 +89,7 @@ void Controller::MouseMoved(sf::Event event)
 
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
   {
-    renderer_->MoveCamera(cursor_delta);
+    renderer_->MoveCamera(-cursor_delta);
   }
 
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -114,13 +114,13 @@ void Controller::MouseMoved(sf::Event event)
 
 void Controller::MouseWheelScrolled(sf::Event event)
 {
-  auto delta = event.mouseWheelScroll.delta;
+  auto scroll_delta = event.mouseWheelScroll.delta;
 
-  if (delta == -1) {
+  if (scroll_delta == -1) {
     renderer_->Zoom(0.9f);
   }
 
-  if (delta == 1) {
+  if (scroll_delta == 1) {
     renderer_->Zoom(1.1f);
   }
 }

@@ -43,6 +43,7 @@ void Renderer::Render()
   window_->setView(view_);
 
   DrawTiles();
+  //DrawGrid();
   DrawOuterWalls();
   for (const auto& individual : game_->individuals_)
   {

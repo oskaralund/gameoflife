@@ -11,6 +11,8 @@
 
 void Ant::Move(double dt)
 {
+  Individual::Move(dt);
+
   food_scent_ *= glm::exp(-0.1*dt);
   colony_scent_ *= glm::exp(-0.1*dt);
 
@@ -20,7 +22,6 @@ void Ant::Move(double dt)
     time_accumulator_ = 0.0;
   }
 
-  Individual::Move(dt);
   time_accumulator_ += dt;
 }
 
@@ -68,7 +69,7 @@ void Ant::RandomDirectionAdjustment()
 void Ant::Render(sf::RenderWindow* window) const
 {
   sf::CircleShape circ(GetRadius());
-  circ.setFillColor(sf::Color::Green);
+  carrying_food_ ? circ.setFillColor(sf::Color::Green) : circ.setFillColor(sf::Color::White);
   circ.setPosition(GetPosition().x, GetPosition().y);
   circ.setOrigin(circ.getRadius(), circ.getRadius());
   window->draw(circ);
@@ -99,13 +100,6 @@ void Ant::LeaveScent() const
       tile_data->colony_scent = colony_scent_;
     }
   }
-
-  auto tile_data = tile->GetData<TileData>();
-  const uint8_t r = tile_data->colony_scent*255;
-  const uint8_t g = 0;
-  const uint8_t b = tile_data->food_scent;
-  const uint8_t a = 255;
-  SetCurrentTileColor({r, g, b, a});
 }
 
 void Ant::SniffForFood()
@@ -151,8 +145,11 @@ void Ant::SniffForFood()
 
 void Ant::SniffForColony()
 {
-  const Tile* target = nullptr;
-  double scent = 0.0;
+  Tile* my_tile = GetCurrentTile();
+  auto my_data = my_tile->GetData<TileData>();
+  double max_scent = my_data ? my_data->colony_scent : 0.0;
+  Tile* smelliest_tile = my_data ? my_tile : nullptr;
+
   for (auto& tile : GetAdjacentTiles())
   {
     if (tile.type == TileType::Colony)
@@ -166,24 +163,29 @@ void Ant::SniffForColony()
     if (!data)
       continue;
 
-    if (data->colony_scent > scent)
+    if (data->colony_scent > max_scent)
     {
-      scent = data->colony_scent;
-      target = &tile;
+      max_scent = data->colony_scent;
+      smelliest_tile = &tile;
     }
   }
 
-  if (target)
+  if (smelliest_tile == my_tile)
   {
-    GoToward(GetTileCenter(*target));
+    my_data->colony_scent = 0.0;
+  }
+
+  if (smelliest_tile)
+  {
+    GoToward(GetTileCenter(*smelliest_tile));
   }
 }
 
 void TileUpdate(Tile* tile, double dt)
 {
   auto tile_data = tile->GetData<Ant::TileData>();
-  tile_data->food_scent *= glm::exp(-0.05*dt);
-  tile_data->colony_scent *= glm::exp(-0.05*dt);
+  tile_data->food_scent *= glm::exp(-0.01*dt);
+  tile_data->colony_scent *= glm::exp(-0.01*dt);
 
   if (tile->type == Ant::TileType::Basic)
   {

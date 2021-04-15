@@ -29,7 +29,7 @@ public:
   void Move(double dt) override;
   void ReactToTile() override;
   void SetColonyPosition(glm::dvec2);
-  void Render(sf::RenderWindow* window) const;
+  void Render(sf::RenderWindow* window) const override;
 
 private:
   double time_accumulator_{0.0};
