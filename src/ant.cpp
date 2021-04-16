@@ -1,6 +1,7 @@
 #include "ant.hpp"
 
 #include <cstdlib>
+#include <random>
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/random.hpp>
@@ -8,6 +9,13 @@
 
 #include "game_of_life.hpp"
 #include "tile.hpp"
+
+Ant::Ant(GameOfLife* game) : Individual(game)
+{
+  std::default_random_engine generator(GetId());
+  std::exponential_distribution<double> distribution(20);
+  exploration_ = distribution(generator);
+}
 
 void Ant::Move(double dt)
 {
@@ -18,7 +26,10 @@ void Ant::Move(double dt)
 
   if (time_accumulator_ > turning_time_)
   {
-    RandomDirectionAdjustment();
+    if (!IsSniffing())
+      RandomDirectionAdjustment();
+
+
     time_accumulator_ = 0.0;
   }
 
@@ -128,6 +139,7 @@ void Ant::Sniff()
   if (smelliest_tile)
   {
     GoToward(GetTileCenter(*smelliest_tile));
+    SetVelocity(glm::rotate(GetVelocity(), exploration_*3.14));
   }
 }
 
@@ -165,4 +177,21 @@ void Ant::InvestigateFood()
 
   carrying_food_ = true;
   food_scent_ = 1.0;
+}
+
+bool Ant::IsSniffing() const
+{
+  auto tile = GetCurrentTile();
+  auto data = tile->GetData<TileData>();
+
+  if (!data)
+    return false;
+
+  if (data->food_scent > 0 && !carrying_food_)
+    return true;
+
+  if (data->colony_scent > 0 && carrying_food_)
+    return true;
+
+  return false;
 }

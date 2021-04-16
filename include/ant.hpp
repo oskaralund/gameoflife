@@ -26,6 +26,7 @@ public:
     int food{100};
   };
 
+  Ant(GameOfLife*);
   void Move(double dt) override;
   void ReactToTile() override;
   void SetColonyPosition(glm::dvec2);
@@ -33,12 +34,11 @@ public:
 
 private:
   double time_accumulator_{0.0};
-  double distance_accumulator_{0.0};
   double max_turning_angle_{0.25*3.14};
-  double turning_angle_{0.0};
   double turning_time_{1.0};
   double food_scent_{0.0};
   double colony_scent_{1.0};
+  double exploration_{0.0};
   bool carrying_food_{false};
 
   void RandomDirectionAdjustment();
@@ -46,6 +46,7 @@ private:
   void LeaveScent() const;
   void Sniff();
   void InvestigateFood();
+  bool IsSniffing() const;
 };
 
 void TileUpdate(Tile*, double);

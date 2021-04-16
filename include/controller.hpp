@@ -12,7 +12,7 @@ class Controller
 public:
   Controller(GameOfLife*, sf::RenderWindow*, Renderer*);
   void ProcessInput();
-  void Render() const;
+  void Render();
 
 private:
   GameOfLife* game_;
@@ -21,18 +21,8 @@ private:
   sf::Vector2f cursor_world_pos_;
   uint8_t selected_type_ = 0;
   uint8_t brush_size_ = 5;
-  sf::Color colors_[10] = {
-    sf::Color::Black,
-    sf::Color::White,
-    sf::Color::Red,
-    sf::Color::Green,
-    sf::Color::Blue,
-    sf::Color::Yellow,
-    sf::Color::Magenta,
-    sf::Color::Cyan,
-    sf::Color::Cyan,
-    sf::Color::Cyan
-  };
+  sf::Font font_;
+  sf::Text header_;
 
   void KeyPressed(sf::Event);
   void MouseButtonPressed(sf::Event);
@@ -41,6 +31,7 @@ private:
   sf::Vector2f GetCursorWorldPosition() const;
   void Paint() const;
   void DrawBrush() const;
+  void DrawHeader();
 };
 
 #endif

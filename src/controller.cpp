@@ -1,6 +1,6 @@
 #include "controller.hpp"
 
-#include <iostream>
+#include <string>
 
 #include "renderer.hpp"
 #include "game_of_life.hpp"
@@ -11,6 +11,11 @@ Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* ren
   , renderer_(renderer)
 {
   cursor_world_pos_ = GetCursorWorldPosition();
+
+  font_.loadFromFile("../res/arial.ttf");
+  header_.setFont(font_);
+  header_.setCharacterSize(24);
+  header_.setFillColor(sf::Color::White);
 }
 
 void Controller::ProcessInput() {
@@ -59,11 +64,13 @@ void Controller::KeyPressed(sf::Event event)
       break;
 
     case sf::Keyboard::Up:
-      game_->time_factor_ *= 2;
+      if (game_->time_factor_ < 20)
+        game_->time_factor_ += 1;
       break;
 
     case sf::Keyboard::Down:
-      game_->time_factor_ /= 2;
+      if (game_->time_factor_ > 0)
+        game_->time_factor_ -= 1;
       break;
 
     case sf::Keyboard::Num0:
@@ -123,9 +130,8 @@ void Controller::MouseMoved(sf::Event event)
 {
   auto new_cursor = GetCursorWorldPosition();
   auto cursor_delta = new_cursor-cursor_world_pos_;
-  cursor_world_pos_ = new_cursor;
 
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
   {
     renderer_->MoveCamera(-cursor_delta);
   }
@@ -134,6 +140,8 @@ void Controller::MouseMoved(sf::Event event)
   {
     Paint();
   }
+
+  cursor_world_pos_ = GetCursorWorldPosition();
 }
 
 void Controller::MouseWheelScrolled(sf::Event event)
@@ -176,7 +184,7 @@ void Controller::Paint() const
   }
 }
 
-void Controller::Render() const
+void Controller::Render()
 {
   const auto prev_view = window_->getView();
   const auto window_size = window_->getSize();
@@ -209,6 +217,8 @@ void Controller::Render() const
 
     window_->draw(rect);
   }
+
+  DrawHeader();
 
   window_->setView(prev_view);
 
@@ -243,4 +253,12 @@ void Controller::DrawBrush() const
       window_->draw(rect);
     }
   }
+}
+
+void Controller::DrawHeader()
+{
+  const auto time_factor = std::to_string(static_cast<int>(game_->time_factor_));
+  std::string string = time_factor + "x";
+  header_.setString(string);
+  window_->draw(header_);
 }
