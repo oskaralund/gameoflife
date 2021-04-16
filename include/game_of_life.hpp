@@ -41,6 +41,19 @@ private:
   double time_factor_{1.0};
   std::vector<std::unique_ptr<Individual>> individuals_;
   std::vector<std::vector<Tile>> tiles_;
+  uint8_t colors_[10][4] = {
+    {0, 0, 0, 255},
+    {0, 255, 0, 255},
+    {160, 82, 45, 255},
+    {255, 0, 0, 255},
+    {0, 255, 255, 255},
+    {255, 0, 255, 255},
+    {255, 255, 0, 255},
+    {100, 0, 0, 255},
+    {0, 100, 0, 255},
+    {0, 0, 100, 255}
+  };
+
 
   void Initialize();
   void UpdateTiles(double dt);

@@ -10,8 +10,7 @@ Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* ren
   , window_(window)
   , renderer_(renderer)
 {
-  auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
-  cursor_ = window_->mapPixelToCoords(cursor_pixel_pos);
+  cursor_world_pos_ = GetCursorWorldPosition();
 }
 
 void Controller::ProcessInput() {
@@ -55,12 +54,56 @@ void Controller::KeyPressed(sf::Event event)
       window_->close();
       break;
 
+    case sf::Keyboard::Q:
+      window_->close();
+      break;
+
     case sf::Keyboard::Up:
       game_->time_factor_ *= 2;
       break;
 
     case sf::Keyboard::Down:
       game_->time_factor_ /= 2;
+      break;
+
+    case sf::Keyboard::Num0:
+      selected_type_ = 9;
+      break;
+
+    case sf::Keyboard::Num1:
+      selected_type_ = 0;
+      break;
+
+    case sf::Keyboard::Num2:
+      selected_type_ = 1;
+      break;
+
+    case sf::Keyboard::Num3:
+      selected_type_ = 2;
+      break;
+
+    case sf::Keyboard::Num4:
+      selected_type_ = 3;
+      break;
+
+    case sf::Keyboard::Num5:
+      selected_type_ = 4;
+      break;
+
+    case sf::Keyboard::Num6:
+      selected_type_ = 5;
+      break;
+
+    case sf::Keyboard::Num7:
+      selected_type_ = 6;
+      break;
+
+    case sf::Keyboard::Num8:
+      selected_type_ = 7;
+      break;
+
+    case sf::Keyboard::Num9:
+      selected_type_ = 8;
       break;
 
     default:
@@ -72,20 +115,15 @@ void Controller::MouseButtonPressed(sf::Event event)
 {
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
   {
-    auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
-    auto cursor = window_->mapPixelToCoords(cursor_pixel_pos);
-    int i, j;
-    game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
-    int tile_type = 1;
-    game_->SetTileType(i, j, tile_type);
+    Paint();
   }
 }
 
 void Controller::MouseMoved(sf::Event event)
 {
-  auto new_cursor_pixel_pos = sf::Mouse::getPosition(*window_);
-  auto new_cursor = window_->mapPixelToCoords(new_cursor_pixel_pos);
-  auto cursor_delta = new_cursor-cursor_;
+  auto new_cursor = GetCursorWorldPosition();
+  auto cursor_delta = new_cursor-cursor_world_pos_;
+  cursor_world_pos_ = new_cursor;
 
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
   {
@@ -94,22 +132,8 @@ void Controller::MouseMoved(sf::Event event)
 
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
   {
-    auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
-    auto cursor = window_->mapPixelToCoords(cursor_pixel_pos);
-    int i, j;
-    game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
-    int tile_type = 1;
-    for (int a = -10; a < 10; ++a)
-    {
-      for (int b = -10; b < 10; ++b)
-      {
-        game_->SetTileType(i+a, j+b, tile_type);
-      }
-    }
-    game_->SetTileType(i, j, tile_type);
+    Paint();
   }
-
-  cursor_ = window_->mapPixelToCoords(new_cursor_pixel_pos);
 }
 
 void Controller::MouseWheelScrolled(sf::Event event)
@@ -122,5 +146,101 @@ void Controller::MouseWheelScrolled(sf::Event event)
 
   if (scroll_delta == 1) {
     renderer_->Zoom(1.1f);
+  }
+}
+
+sf::Vector2f Controller::GetCursorWorldPosition() const
+{
+  auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
+  auto cursor_world_pos = window_->mapPixelToCoords(cursor_pixel_pos);
+
+  return cursor_world_pos;
+}
+
+void Controller::Paint() const
+{
+  auto cursor = GetCursorWorldPosition();
+  int i, j;
+  game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
+  int max_i = glm::min(i+brush_size_, game_->num_rows_-1);
+  int min_i = glm::max(i-brush_size_, 0);
+  int max_j = glm::min(j+brush_size_, game_->num_cols_-1);
+  int min_j = glm::max(j-brush_size_, 0);
+
+  for (int i = min_i; i < max_i; ++i)
+  {
+    for (int j = min_j; j < max_j; ++j)
+    {
+      game_->SetTileType(i, j, selected_type_);
+    }
+  }
+}
+
+void Controller::Render() const
+{
+  const auto prev_view = window_->getView();
+  const auto window_size = window_->getSize();
+  const auto gui_view = sf::View({0.0f, 0.0f, static_cast<float>(window_size.x), static_cast<float>(window_size.y)});
+  window_->setView(gui_view);
+
+  const auto padding = 10.0f;
+  const auto rect_size = 20.0f;
+  sf::RectangleShape rect{{rect_size, rect_size}};
+  const auto startx = padding;
+  const auto starty = window_size.y - padding - 20;
+
+  for (int i = 0; i < 10; ++i)
+  {
+    rect.setPosition({startx + i*(rect_size + padding), starty});
+    rect.setFillColor({game_->colors_[i][0],
+                       game_->colors_[i][1],
+                       game_->colors_[i][2],
+                       game_->colors_[i][3]});
+
+    if (i == selected_type_)
+    {
+      rect.setOutlineThickness(3);
+      rect.setOutlineColor(sf::Color(250, 150, 100));
+    }
+    else
+    {
+      rect.setOutlineThickness(0);
+    }
+
+    window_->draw(rect);
+  }
+
+  window_->setView(prev_view);
+
+  DrawBrush();
+}
+
+void Controller::DrawBrush() const
+{
+  auto cursor = GetCursorWorldPosition();
+  int i, j;
+  game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
+  int max_i = glm::min(i+brush_size_, game_->num_rows_-1);
+  int min_i = glm::max(i-brush_size_, 0);
+  int max_j = glm::min(j+brush_size_, game_->num_cols_-1);
+  int min_j = glm::max(j-brush_size_, 0);
+
+
+  const auto padding = 0.3f;
+  const auto dx = static_cast<float>(game_->dx_);
+  const auto dy = static_cast<float>(game_->dy_);
+
+  sf::RectangleShape rect{{dx*(1-2*padding), dy*(1-2*padding)}};
+  for (int i = min_i; i < max_i; ++i)
+  {
+    for (int j = min_j; j < max_j; ++j)
+    {
+      rect.setPosition({-1 + (j+padding)*dy, -1 + (i+padding)*dx});
+      rect.setFillColor({game_->colors_[selected_type_][0],
+                         game_->colors_[selected_type_][1],
+                         game_->colors_[selected_type_][2],
+                         game_->colors_[selected_type_][3]});
+      window_->draw(rect);
+    }
   }
 }

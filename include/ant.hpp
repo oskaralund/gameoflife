@@ -23,7 +23,7 @@ public:
   struct TileData {
     double food_scent{0.0};
     double colony_scent{0.0};
-    double intensity{1.0};
+    int food{100};
   };
 
   void Move(double dt) override;
@@ -45,6 +45,7 @@ private:
   void InteractWithObjects();
   void LeaveScent() const;
   void Sniff();
+  void InvestigateFood();
 };
 
 void TileUpdate(Tile*, double);

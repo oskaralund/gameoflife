@@ -43,20 +43,12 @@ void GameOfLife::SetTileType(int i, int j, int type)
 {
   tiles_[i][j].type = type;
 
-  if (type == 0)
+  if (type > 0 && type < 10)
   {
-    tiles_[i][j].color[0] = 0;
-    tiles_[i][j].color[1] = 0;
-    tiles_[i][j].color[2] = 0;
-    tiles_[i][j].color[3] = 255;
-  }
-
-  if (type == 1)
-  {
-    tiles_[i][j].color[0] = 255;
-    tiles_[i][j].color[1] = 0;
-    tiles_[i][j].color[2] = 255;
-    tiles_[i][j].color[3] = 255;
+    tiles_[i][j].color[0] = colors_[type][0];
+    tiles_[i][j].color[1] = colors_[type][1];
+    tiles_[i][j].color[2] = colors_[type][2];
+    tiles_[i][j].color[3] = colors_[type][3];
   }
 }
 

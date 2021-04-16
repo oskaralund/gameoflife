@@ -34,12 +34,7 @@ void Ant::ReactToTile()
   switch (tile->type)
   {
     case Ant::TileType::Food:
-      if (carrying_food_)
-        break;
-
-      carrying_food_ = true;
-      food_scent_ = 1.0;
-      SetCurrentTileType(Ant::TileType::Basic);
+      InvestigateFood();
       break;
 
     case Ant::TileType::Colony:
@@ -139,8 +134,8 @@ void Ant::Sniff()
 void TileUpdate(Tile* tile, double dt)
 {
   auto tile_data = tile->GetData<Ant::TileData>();
-  tile_data->food_scent *= glm::exp(-0.01*dt);
-  tile_data->colony_scent *= glm::exp(-0.01*dt);
+  tile_data->food_scent *= glm::exp(-0.03*dt);
+  tile_data->colony_scent *= glm::exp(-0.03*dt);
 
   if (tile->type == Ant::TileType::Basic)
   {
@@ -149,4 +144,25 @@ void TileUpdate(Tile* tile, double dt)
     tile->color[2] = tile_data->food_scent*255;
     tile->color[3] = 255;
   }
+}
+
+void Ant::InvestigateFood()
+{
+  auto tile = GetCurrentTile();
+  auto data = tile->GetData<TileData>();
+
+  if (!data)
+    return;
+
+  if (data->food == 1)
+  {
+    SetCurrentTileType(TileType::Basic);
+  }
+  else
+  {
+    data->food -= 1;
+  }
+
+  carrying_food_ = true;
+  food_scent_ = 1.0;
 }
