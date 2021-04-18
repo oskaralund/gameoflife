@@ -23,6 +23,8 @@ private:
   uint8_t brush_size_ = 1;
   sf::Font font_;
   sf::Text header_;
+  bool paused_{false};
+  double time_factor_{1.0};
 
   void KeyPressed(sf::Event);
   void MouseButtonPressed(sf::Event);

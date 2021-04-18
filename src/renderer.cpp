@@ -59,7 +59,7 @@ void Renderer::MoveCamera(sf::Vector2f delta)
 
 void Renderer::Zoom(float factor)
 {
-  view_.zoom(1/factor);
+  view_.zoom(factor);
   window_->setView(view_);
 }
 
@@ -129,4 +129,15 @@ void Renderer::DrawTiles()
     }
   }
   window_->draw(grid_va_);
+}
+
+void Renderer::ZoomAt(sf::Vector2i pixel, float factor)
+{
+  const sf::Vector2f before_coord{window_->mapPixelToCoords(pixel)};
+  view_.zoom(factor);
+  window_->setView(view_);
+  const sf::Vector2f after_coord{window_->mapPixelToCoords(pixel)};
+  const sf::Vector2f offset_coords{before_coord - after_coord};
+  view_.move(offset_coords);
+  window_->setView(view_);
 }

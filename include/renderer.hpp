@@ -11,6 +11,7 @@ public:
   void Render();
   void MoveCamera(sf::Vector2f);
   void Zoom(float factor);
+  void ZoomAt(sf::Vector2i pixel, float factor);
 
 private:
   sf::RenderWindow* window_;

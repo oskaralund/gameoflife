@@ -55,6 +55,20 @@ void Controller::KeyPressed(sf::Event event)
 {
   switch (event.key.code)
   {
+    case sf::Keyboard::Space:
+      if (!paused_)
+      {
+        paused_ = true;
+        time_factor_ = game_->time_factor_;
+        game_->time_factor_ = 0;
+      }
+      else
+      {
+        paused_ = false;
+        game_->time_factor_ = time_factor_;
+      }
+      break;
+
     case sf::Keyboard::Escape:
       window_->close();
       break;
@@ -64,13 +78,25 @@ void Controller::KeyPressed(sf::Event event)
       break;
 
     case sf::Keyboard::Up:
+      if (paused_)
+        break;
+
       if (game_->time_factor_ < 20)
+      {
         game_->time_factor_ += 1;
+        time_factor_ = game_->time_factor_;
+      }
       break;
 
     case sf::Keyboard::Down:
+      if (paused_)
+        break;
+
       if (game_->time_factor_ > 0)
+      {
         game_->time_factor_ -= 1;
+        time_factor_ = game_->time_factor_;
+      }
       break;
 
     case sf::Keyboard::Num0:
@@ -131,7 +157,7 @@ void Controller::MouseMoved(sf::Event event)
   auto new_cursor = GetCursorWorldPosition();
   auto cursor_delta = new_cursor-cursor_world_pos_;
 
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
   {
     renderer_->MoveCamera(-cursor_delta);
   }
@@ -147,13 +173,13 @@ void Controller::MouseMoved(sf::Event event)
 void Controller::MouseWheelScrolled(sf::Event event)
 {
   auto scroll_delta = event.mouseWheelScroll.delta;
-
+  auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
   if (scroll_delta == -1) {
-    renderer_->Zoom(0.9f);
+    renderer_->ZoomAt(cursor_pixel_pos, 1.1f);
   }
 
   if (scroll_delta == 1) {
-    renderer_->Zoom(1.1f);
+    renderer_->ZoomAt(cursor_pixel_pos, 0.9f);
   }
 }
 
@@ -257,8 +283,9 @@ void Controller::DrawBrush() const
 
 void Controller::DrawHeader()
 {
-  const auto time_factor = std::to_string(static_cast<int>(game_->time_factor_));
-  std::string string = time_factor + "x";
+  const auto time_factor = std::to_string(static_cast<int>(time_factor_));
+  const auto paused = paused_ ? "Paused" : "";
+  std::string string = time_factor + "x\t" + paused;
   header_.setString(string);
   window_->draw(header_);
 }
