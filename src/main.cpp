@@ -8,7 +8,7 @@ int main()
 {
   sf::RenderWindow window{ sf::VideoMode(1000, 1000), "Game of Life" };
   //GameOfLife game{10,10};
-  //game.AddAntColony(10);
+  //game.AddAntColony(1000);
   //GameOfLife game{100,100};
   //game.AddAntColony(200);
   GameOfLife game(200,200);

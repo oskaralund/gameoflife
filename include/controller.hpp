@@ -20,7 +20,7 @@ private:
   Renderer* renderer_;
   sf::Vector2f cursor_world_pos_;
   uint8_t selected_type_ = 0;
-  uint8_t brush_size_ = 5;
+  uint8_t brush_size_ = 1;
   sf::Font font_;
   sf::Text header_;
 

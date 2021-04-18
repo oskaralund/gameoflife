@@ -16,20 +16,18 @@ public:
     Basic = 0,
     Food,
     Colony,
-    FoodScent,
-    HomeScent,
+    Wall
   };
 
   struct TileData {
     double food_scent{0.0};
     double colony_scent{0.0};
-    int food{100};
+    int food{500};
   };
 
   Ant(GameOfLife*);
   void Move(double dt) override;
-  void ReactToTile() override;
-  void SetColonyPosition(glm::dvec2);
+  void ReactToTile(Tile*) override;
   void Render(sf::RenderWindow* window) const override;
 
 private:
@@ -40,11 +38,12 @@ private:
   double colony_scent_{1.0};
   double exploration_{0.0};
   bool carrying_food_{false};
+  std::default_random_engine generator_;
 
   void RandomDirectionAdjustment();
   void InteractWithObjects();
-  void LeaveScent() const;
-  void Sniff();
+  void LeaveScent(Tile*) const;
+  void Sniff(Tile*);
   void InvestigateFood();
   bool IsSniffing() const;
 };

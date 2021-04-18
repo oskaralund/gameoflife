@@ -1,21 +1,20 @@
 #include "ant.hpp"
 
 #include <cstdlib>
-#include <random>
+#include <iostream>
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtc/random.hpp>
+#include <glm/gtx/vector_angle.hpp>
 #include <SFML/Graphics.hpp>
 
 #include "game_of_life.hpp"
 #include "tile.hpp"
 
-Ant::Ant(GameOfLife* game) : Individual(game)
-{
-  std::default_random_engine generator(GetId());
-  std::exponential_distribution<double> distribution(20);
-  exploration_ = distribution(generator);
-}
+Ant::Ant(GameOfLife* game)
+  : Individual(game)
+  , generator_(GetId())
+{}
 
 void Ant::Move(double dt)
 {
@@ -26,32 +25,38 @@ void Ant::Move(double dt)
 
   if (time_accumulator_ > turning_time_)
   {
-    if (!IsSniffing())
-      RandomDirectionAdjustment();
-
+    RandomDirectionAdjustment();
 
     time_accumulator_ = 0.0;
+    std::exponential_distribution<double> turning_time_distribution(1.0);
+    turning_time_ = turning_time_distribution(generator_);
   }
 
   time_accumulator_ += dt;
 }
 
-void Ant::ReactToTile()
+void Ant::ReactToTile(Tile* tile)
 {
-  LeaveScent();
-  Sniff();
+  Sniff(tile);
 
-  auto tile = GetCurrentTile();
+  if (tile->type != TileType::Wall)
+    LeaveScent(tile);
+
   switch (tile->type)
   {
-    case Ant::TileType::Food:
+    case TileType::Food:
       InvestigateFood();
       break;
 
-    case Ant::TileType::Colony:
+    case TileType::Colony:
       carrying_food_ = false;
       colony_scent_ = 1.0;
       food_scent_ = 0.0;
+      break;
+
+    case TileType::Wall:
+      SetPosition(GetPreviousPosition());
+      GoToward(GetTileCenter(*GetPreviousTile()));
       break;
 
     default:
@@ -74,10 +79,8 @@ void Ant::Render(sf::RenderWindow* window) const
   window->draw(circ);
 }
 
-void Ant::LeaveScent() const
+void Ant::LeaveScent(Tile* tile) const
 {
-  auto tile = GetCurrentTile();
-
   if (!tile->data)
   {
     auto tile_data = std::make_shared<TileData>();
@@ -101,45 +104,47 @@ void Ant::LeaveScent() const
   }
 }
 
-void Ant::Sniff()
+void Ant::Sniff(Tile* tile)
 {
-  Tile* my_tile = GetCurrentTile();
-  auto my_data = my_tile->GetData<TileData>();
-  double max_scent = carrying_food_ ? my_data->colony_scent : my_data->food_scent;
-  Tile* smelliest_tile = my_tile;
+  auto data = tile->GetData<TileData>();
+  double max_scent = 0.0;
+
+  if (data)
+    max_scent = carrying_food_ ? data->colony_scent : data->food_scent;
+
+  Tile* smelliest_tile = tile;
   auto target_tile_type = carrying_food_ ? TileType::Colony : TileType::Food;
 
-  for (auto& tile : GetAdjacentTiles())
+  for (auto& adjacent_tile : GetAdjacentTiles())
   {
-    if (tile.type == target_tile_type)
+    if (adjacent_tile.type == target_tile_type)
     {
-      GoToward(GetTileCenter(tile));
+      GoToward(GetTileCenter(adjacent_tile));
       return;
     }
 
-    const auto data = tile.GetData<TileData>();
+    const auto adjacent_data = adjacent_tile.GetData<TileData>();
 
-    if (!data)
+    if (!adjacent_data)
       continue;
 
-    const double scent = carrying_food_ ? data->colony_scent : data->food_scent;
+    const double scent = carrying_food_ ? adjacent_data->colony_scent : adjacent_data->food_scent;
     if (scent > max_scent)
     {
       max_scent = scent;
-      smelliest_tile = &tile;
+      smelliest_tile = &adjacent_tile;
     }
   }
 
-  if (smelliest_tile == my_tile)
+  if (smelliest_tile == tile && data)
   {
-    carrying_food_ ? my_data->colony_scent = 0.0 : my_data->food_scent = 0.0;
+    carrying_food_ ? data->colony_scent = 0.0 : data->food_scent = 0.0;
     return;
   }
 
   if (smelliest_tile)
   {
     GoToward(GetTileCenter(*smelliest_tile));
-    SetVelocity(glm::rotate(GetVelocity(), exploration_*3.14));
   }
 }
 

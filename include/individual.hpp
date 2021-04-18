@@ -39,15 +39,17 @@ public:
 
   // This function is called whenever the Individual moves to a new tile. By
   // default it does nothing. Override it to get custom behavior.
-  virtual void ReactToTile();
+  virtual void ReactToTile(Tile* tile);
 
   // Specifies how to render the Individual. Defaults to a green circle.
   virtual void Render(sf::RenderWindow* window) const;
 
+  void SetPosition(glm::dvec2);
   void SetVelocity(glm::dvec2);
   void SetRadius(double);
   double GetRadius() const;
   glm::dvec2 GetPosition() const;
+  glm::dvec2 GetPreviousPosition() const;
   glm::dvec2 GetVelocity() const;
   GameOfLife* GetGame() const;
 
@@ -65,10 +67,10 @@ protected:
   //   for (auto& tile : GetAdjacentTiles()) { DoSomething(tile); }
   //
   AdjacentTiles GetAdjacentTiles() const;
-
   void SetCurrentTileType(int) const;
   void SetCurrentTileColor(const std::array<uint8_t, 4>& color) const;
   Tile* GetCurrentTile() const;
+  Tile* GetPreviousTile() const;
   glm::dvec2 GetTileCenter(const Tile&);
 
 private:
@@ -76,7 +78,9 @@ private:
   int view_distance_{1};
   glm::dvec2 position_{0,0};
   glm::dvec2 velocity_{0,0};
+  glm::dvec2 prev_position_{0,0};
   Tile* tile_{nullptr};
+  Tile* prev_tile_{nullptr};
   double speed_{0.05};
   double radius_{0.001};
   GameOfLife* game_;

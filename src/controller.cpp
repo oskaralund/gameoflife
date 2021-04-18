@@ -175,9 +175,9 @@ void Controller::Paint() const
   int max_j = glm::min(j+brush_size_, game_->num_cols_-1);
   int min_j = glm::max(j-brush_size_, 0);
 
-  for (int i = min_i; i < max_i; ++i)
+  for (int i = min_i; i <= max_i; ++i)
   {
-    for (int j = min_j; j < max_j; ++j)
+    for (int j = min_j; j <= max_j; ++j)
     {
       game_->SetTileType(i, j, selected_type_);
     }
@@ -241,9 +241,9 @@ void Controller::DrawBrush() const
   const auto dy = static_cast<float>(game_->dy_);
 
   sf::RectangleShape rect{{dx*(1-2*padding), dy*(1-2*padding)}};
-  for (int i = min_i; i < max_i; ++i)
+  for (int i = min_i; i <= max_i; ++i)
   {
-    for (int j = min_j; j < max_j; ++j)
+    for (int j = min_j; j <= max_j; ++j)
     {
       rect.setPosition({-1 + (j+padding)*dy, -1 + (i+padding)*dx});
       rect.setFillColor({game_->colors_[selected_type_][0],

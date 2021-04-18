@@ -16,6 +16,7 @@ Individual::Individual(GameOfLife* game)
 {
   id_ = Individual::instances++;
   tile_ = GetCurrentTile();
+  prev_tile_ = GetCurrentTile();
 }
 
 void Individual::Move(double dt)
@@ -23,9 +24,11 @@ void Individual::Move(double dt)
   auto tile = GetCurrentTile();
   if (tile_ != tile)
   {
+    prev_tile_ = tile_;
     tile_ = tile;
-    ReactToTile();
+    ReactToTile(tile_);
   }
+  prev_position_ = position_;
   position_ += dt*velocity_;
   EnforceWalls();
 }
@@ -58,7 +61,7 @@ void Individual::EnforceWalls()
 
 }
 
-void Individual::ReactToTile()
+void Individual::ReactToTile(Tile*)
 {
 
 }
@@ -70,6 +73,12 @@ void Individual::Render(sf::RenderWindow* window) const
   circ.setPosition(position_.x, position_.y);
   circ.setOrigin(circ.getRadius(), circ.getRadius());
   window->draw(circ);
+}
+
+void Individual::SetPosition(glm::dvec2 p)
+{
+  position_ = p;
+  tile_ = GetCurrentTile();
 }
 
 void Individual::SetVelocity(glm::dvec2 v)
@@ -85,6 +94,11 @@ glm::dvec2 Individual::GetVelocity() const
 glm::dvec2 Individual::GetPosition() const
 {
   return position_;
+}
+
+glm::dvec2 Individual::GetPreviousPosition() const
+{
+  return prev_position_;
 }
 
 GameOfLife* Individual::GetGame() const
@@ -162,4 +176,9 @@ AdjacentTiles Individual::GetAdjacentTiles() const
   int i, j;
   GetCurrentTileCoords(&i, &j);
   return AdjacentTiles(game_, i, j);
+}
+
+Tile* Individual::GetPreviousTile() const
+{
+  return prev_tile_;
 }
