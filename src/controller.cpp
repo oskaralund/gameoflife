@@ -45,6 +45,10 @@ void Controller::ProcessInput() {
         MouseWheelScrolled(event);
         break;
 
+      case sf::Event::Resized:
+        renderer_->MatchWindowCameraRatio();
+        break;
+
       default:
         break;
     }

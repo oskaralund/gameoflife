@@ -13,8 +13,10 @@
 
 Ant::Ant(GameOfLife* game)
   : Individual(game)
-  , generator_(GetId())
-{}
+{
+  exploration_ = glm::linearRand(0.0, 10.0);
+  exploration_ = glm::exp(-exploration_);
+}
 
 void Ant::Move(double dt)
 {
@@ -26,10 +28,8 @@ void Ant::Move(double dt)
   if (time_accumulator_ > turning_time_)
   {
     RandomDirectionAdjustment();
-
+    turning_time_ = glm::linearRand(0.0, 5.0);
     time_accumulator_ = 0.0;
-    std::exponential_distribution<double> turning_time_distribution(1.0);
-    turning_time_ = turning_time_distribution(generator_);
   }
 
   time_accumulator_ += dt;
@@ -45,7 +45,7 @@ void Ant::ReactToTile(Tile* tile)
   switch (tile->type)
   {
     case TileType::Food:
-      InvestigateFood();
+      InvestigateFood(tile);
       break;
 
     case TileType::Colony:
@@ -144,28 +144,14 @@ void Ant::Sniff(Tile* tile)
 
   if (smelliest_tile)
   {
-    GoToward(GetTileCenter(*smelliest_tile));
+    const auto rand = glm::linearRand(0.0, 1.0);
+    if (rand > exploration_)
+      GoToward(GetTileCenter(*smelliest_tile));
   }
 }
 
-void TileUpdate(Tile* tile, double dt)
+void Ant::InvestigateFood(Tile* tile)
 {
-  auto tile_data = tile->GetData<Ant::TileData>();
-  tile_data->food_scent *= glm::exp(-0.03*dt);
-  tile_data->colony_scent *= glm::exp(-0.03*dt);
-
-  if (tile->type == Ant::TileType::Basic)
-  {
-    tile->color[0] = tile_data->colony_scent*255;
-    tile->color[1] = 0;
-    tile->color[2] = tile_data->food_scent*255;
-    tile->color[3] = 255;
-  }
-}
-
-void Ant::InvestigateFood()
-{
-  auto tile = GetCurrentTile();
   auto data = tile->GetData<TileData>();
 
   if (!data)
@@ -184,19 +170,45 @@ void Ant::InvestigateFood()
   food_scent_ = 1.0;
 }
 
-bool Ant::IsSniffing() const
+void Ant::AddAntColony(GameOfLife* game, int num_ants, int i, int j)
 {
-  auto tile = GetCurrentTile();
-  auto data = tile->GetData<TileData>();
+  game->SetTileType(0, 0, Ant::TileType::Colony);
+  int max_i = glm::min(i+1, game->GetNumRows()-1);
+  int min_i = glm::max(i-1, 0);
+  int max_j = glm::min(j+1, game->GetNumCols()-1);
+  int min_j = glm::max(j-1, 0);
 
-  if (!data)
-    return false;
+  for (int i = min_i; i <= max_i; ++i)
+  {
+    for (int j = min_j; j <= max_j; ++j)
+    {
+      game->SetTileType(i, j, Ant::TileType::Colony);
+    }
+  }
 
-  if (data->food_scent > 0 && !carrying_food_)
-    return true;
+  const auto pos = game->GetTileCenter(i, j);
 
-  if (data->colony_scent > 0 && carrying_food_)
-    return true;
+  for (int i = 0; i < num_ants; ++i) {
+    auto ant = std::make_unique<Ant>(game);
 
-  return false;
+    auto theta = glm::linearRand(0.0, 2.0*3.14);
+    ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
+    ant->SetPosition(pos);
+    game->AddIndividual(std::move(ant));
+  }
+}
+
+void TileUpdate(Tile* tile, double dt)
+{
+  auto tile_data = tile->GetData<Ant::TileData>();
+  tile_data->food_scent *= glm::exp(-0.03*dt);
+  tile_data->colony_scent *= glm::exp(-0.03*dt);
+
+  if (tile->type == Ant::TileType::Basic)
+  {
+    tile->color[0] = tile_data->colony_scent*255;
+    tile->color[1] = 0;
+    tile->color[2] = tile_data->food_scent*255;
+    tile->color[3] = 255;
+  }
 }

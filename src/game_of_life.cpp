@@ -126,3 +126,7 @@ int GameOfLife::GetNumCols() const
   return num_cols_;
 }
 
+void GameOfLife::AddIndividual(std::unique_ptr<Individual> individual)
+{
+  individuals_.push_back(std::move(individual));
+}

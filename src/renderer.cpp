@@ -8,7 +8,7 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   , grid_va_(sf::Quads, game->num_cols_*game_->num_rows_*4)
 {
   view_.setCenter(sf::Vector2f{0.0f, 0.0f});
-  view_.setSize(sf::Vector2f{2.0, 2.0});
+  MatchWindowCameraRatio();
   window_->setView(view_);
   clock_.restart();
 
@@ -140,4 +140,13 @@ void Renderer::ZoomAt(sf::Vector2i pixel, float factor)
   const sf::Vector2f offset_coords{before_coord - after_coord};
   view_.move(offset_coords);
   window_->setView(view_);
+}
+
+void Renderer::MatchWindowCameraRatio()
+{
+  const auto window_size = window_->getSize();
+  const auto width = static_cast<float>(window_size.x);
+  const auto height = static_cast<float>(window_size.y);
+  const auto ratio = width/height;
+  view_.setSize(sf::Vector2f{2.0f*ratio, 2.0f});
 }

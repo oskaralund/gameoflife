@@ -30,22 +30,21 @@ public:
   void ReactToTile(Tile*) override;
   void Render(sf::RenderWindow* window) const override;
 
+  static void AddAntColony(GameOfLife*, int num_ants, int row, int col);
+
 private:
   double time_accumulator_{0.0};
   double max_turning_angle_{0.25*3.14};
   double turning_time_{1.0};
   double food_scent_{0.0};
-  double colony_scent_{1.0};
+  double colony_scent_{0.0};
   double exploration_{0.0};
   bool carrying_food_{false};
-  std::default_random_engine generator_;
 
   void RandomDirectionAdjustment();
-  void InteractWithObjects();
   void LeaveScent(Tile*) const;
   void Sniff(Tile*);
-  void InvestigateFood();
-  bool IsSniffing() const;
+  void InvestigateFood(Tile*);
 };
 
 void TileUpdate(Tile*, double);
