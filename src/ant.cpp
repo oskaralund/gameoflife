@@ -14,7 +14,7 @@
 Ant::Ant(GameOfLife* game)
   : Individual(game)
 {
-  exploration_ = glm::linearRand(0.0, 10.0);
+  exploration_ = glm::linearRand(0.0, 20.0);
   exploration_ = glm::exp(-exploration_);
 }
 
@@ -172,7 +172,6 @@ void Ant::InvestigateFood(Tile* tile)
 
 void Ant::AddAntColony(GameOfLife* game, int num_ants, int i, int j)
 {
-  game->SetTileType(0, 0, Ant::TileType::Colony);
   int max_i = glm::min(i+1, game->GetNumRows()-1);
   int min_i = glm::max(i-1, 0);
   int max_j = glm::min(j+1, game->GetNumCols()-1);

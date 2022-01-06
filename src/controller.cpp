@@ -1,14 +1,16 @@
 #include "controller.hpp"
 
 #include <string>
+#include <iostream>
 
 #include "renderer.hpp"
 #include "game_of_life.hpp"
 
 Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* renderer)
-  : game_(game)
-  , window_(window)
-  , renderer_(renderer)
+  : game_{game}
+  , window_{window}
+  , renderer_{renderer}
+  , console_{window, "../res/arial.ttf"}
 {
   cursor_world_pos_ = GetCursorWorldPosition();
 
@@ -16,9 +18,12 @@ Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* ren
   header_.setFont(font_);
   header_.setCharacterSize(24);
   header_.setFillColor(sf::Color::White);
+  InitializeConsole();
 }
 
 void Controller::ProcessInput() {
+  console_.ProcessInput();
+
   sf::Event event;
 
   while (window_->pollEvent(event))
@@ -71,6 +76,10 @@ void Controller::KeyPressed(sf::Event event)
         paused_ = false;
         game_->time_factor_ = time_factor_;
       }
+      break;
+
+    case -1:
+      console_.Toggle();
       break;
 
     case sf::Keyboard::Escape:
@@ -216,6 +225,8 @@ void Controller::Paint() const
 
 void Controller::Render()
 {
+  console_.Render();
+
   const auto prev_view = window_->getView();
   const auto window_size = window_->getSize();
   const auto gui_view = sf::View({0.0f, 0.0f, static_cast<float>(window_size.x), static_cast<float>(window_size.y)});
@@ -292,4 +303,9 @@ void Controller::DrawHeader()
   std::string string = time_factor + "x\t" + paused;
   header_.setString(string);
   window_->draw(header_);
+}
+
+void Controller::InitializeConsole()
+{
+  console_.AddCommand("quit", [&](std::string) -> void {window_->close();});
 }

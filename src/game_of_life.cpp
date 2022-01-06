@@ -60,9 +60,10 @@ void GameOfLife::Move(double elapsed_time)
 
   while (time_accumulator_ - dt_ > 0)
   {
-    for (auto& individual : individuals_)
+    #pragma omp parallel for
+    for (int i = 0; i < individuals_.size(); ++i)
     {
-      individual->Move(dt_);
+      individuals_[i]->Move(dt_);
     }
 
     time_accumulator_ -= dt_;
@@ -73,6 +74,7 @@ void GameOfLife::Move(double elapsed_time)
 
 void GameOfLife::UpdateTiles(double dt)
 {
+  #pragma omp parallel for
   for (int i = 0; i < num_rows_; ++i)
   {
     for (int j = 0; j < num_cols_; ++j)
@@ -83,24 +85,6 @@ void GameOfLife::UpdateTiles(double dt)
       }
     }
   }
-}
-
-void GameOfLife::AddAntColony(int num_ants)
-{
-  glm::dvec2 colony_pos{0.0, 0.0};
-  int i,j;
-  PositionToTile(colony_pos, &i, &j);
-  colony_pos = GetTileCenter(i, j);
-  tiles_[i][j].type = Ant::TileType::Colony;
-
-  for (int i = 0; i < num_ants; ++i) {
-    auto ant = std::make_unique<Ant>(this);
-
-    auto theta = glm::linearRand(0.0, 2.0*3.14);
-    ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
-    individuals_.push_back(std::move(ant));
-  }
-
 }
 
 void GameOfLife::PositionToTile(glm::dvec2 pos, int* i, int* j) const
