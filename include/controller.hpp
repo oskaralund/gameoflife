@@ -38,6 +38,9 @@ private:
   void DrawBrush() const;
   void DrawHeader();
   void InitializeConsole();
+
+  //Console commands
+  void Quit(std::string);
 };
 
 #endif

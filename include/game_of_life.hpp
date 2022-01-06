@@ -44,7 +44,7 @@ private:
   std::vector<std::unique_ptr<Individual>> individuals_;
   std::vector<std::vector<Tile>> tiles_;
   uint8_t colors_[10][4] = {
-    {0, 0, 0, 255},
+    {255, 255, 255, 255},
     {0, 255, 0, 255},
     {0, 255, 255, 255},
     {80, 80, 80, 255},

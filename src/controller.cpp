@@ -307,5 +307,11 @@ void Controller::DrawHeader()
 
 void Controller::InitializeConsole()
 {
-  console_.AddCommand("quit", [&](std::string) -> void {window_->close();});
+  console_.AddCommand("quit", [this](std::string s) -> void {Quit(s);});
+}
+
+//Console commands
+void Controller::Quit(std::string s)
+{
+  window_->close();
 }

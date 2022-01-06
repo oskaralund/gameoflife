@@ -111,7 +111,9 @@ void Console::KeyPressed(sf::Event event)
       ProcessCommand(input_string_);
       MoveInputToHistory();
       break;
-
+    case sf::Keyboard::Tab:
+      TabComplete();
+      break;
     default:
       break;
   }
@@ -122,14 +124,20 @@ void Console::TextEntered(sf::Event event)
   if (event.text.unicode >= 128)
     return;
 
-  if (event.text.unicode == '\b')
+  if (event.text.unicode == '\t') // Disregard tab
+    return;
+
+  if (event.text.unicode == '\r') // Disregard enter
+    return;
+
+  if (event.text.unicode == '\b') // Delete character on backspace
   {
     if (input_string_.getSize() > 0)
       input_string_.erase(input_string_.getSize()-1);
     else
       return;
   }
-  else
+  else // Else add character
   {
     input_string_ += event.text.unicode;
   }
