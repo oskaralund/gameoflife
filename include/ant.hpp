@@ -20,24 +20,24 @@ public:
   };
 
   struct TileData {
-    double food_scent{0.0};
-    double colony_scent{0.0};
+    float food_scent{0.0f};
+    float colony_scent{0.0f};
     int food{500};
   };
 
   Ant(GameOfLife*);
-  void Move(double dt) override;
+  void Move(float dt) override;
   void ReactToTile(Tile*) override;
 
   static void AddAntColony(GameOfLife*, int num_ants, int row, int col);
 
 private:
-  double time_accumulator_{0.0};
-  double max_turning_angle_{0.25*3.14};
-  double turning_time_{1.0};
-  double food_scent_{0.0};
-  double colony_scent_{0.0};
-  double exploration_{0.0};
+  float time_accumulator_{0.0f};
+  float max_turning_angle_{0.25f*3.14f};
+  float turning_time_{1.0f};
+  float food_scent_{0.0f};
+  float colony_scent_{0.0f};
+  float exploration_{0.0f};
   bool carrying_food_{false};
 
   void RandomDirectionAdjustment();
@@ -46,6 +46,6 @@ private:
   void InvestigateFood(Tile*);
 };
 
-void TileUpdate(Tile*, double);
+void TileUpdate(Tile*, float);
 
 #endif

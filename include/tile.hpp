@@ -17,7 +17,7 @@ struct Tile {
                 // to determine behavior (see individual.hpp).
 
   // Users can store an update function to be called at each timestep.
-  std::function<void(Tile*, double)> update = nullptr;
+  std::function<void(Tile*, float)> update = nullptr;
 
   // Users can store arbitrary data through the data pointer.
   std::shared_ptr<void> data = nullptr;

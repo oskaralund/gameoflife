@@ -46,7 +46,7 @@ void GameOfLife::SetTileType(int i, int j, int type)
   tiles_[i][j].data = nullptr;
 }
 
-void GameOfLife::Move(double elapsed_time)
+void GameOfLife::Move(float elapsed_time)
 {
   time_accumulator_ += time_factor_*elapsed_time;
 
@@ -64,7 +64,7 @@ void GameOfLife::Move(double elapsed_time)
   UpdateTiles(time_factor_*elapsed_time);
 }
 
-void GameOfLife::UpdateTiles(double dt)
+void GameOfLife::UpdateTiles(float dt)
 {
   #pragma omp parallel for
   for (std::size_t i = 0; i < num_rows_; ++i)

@@ -24,7 +24,7 @@ private:
   sf::Font font_;
   sf::Text header_;
   bool paused_{false};
-  double time_factor_{1.0};
+  float time_factor_{1.0f};
 
   void KeyPressed(sf::Event);
   void MouseButtonPressed(sf::Event);

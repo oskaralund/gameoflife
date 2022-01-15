@@ -18,7 +18,7 @@ Ant::Ant(GameOfLife* game)
   exploration_ = glm::exp(-exploration_);
 }
 
-void Ant::Move(double dt)
+void Ant::Move(float dt)
 {
   Individual::Move(dt);
 
@@ -98,7 +98,7 @@ void Ant::LeaveScent(Tile* tile) const
 void Ant::Sniff(Tile* tile)
 {
   auto data = tile->GetData<TileData>();
-  double max_scent = 0.0;
+  float max_scent = 0.0;
 
   if (data)
     max_scent = carrying_food_ ? data->colony_scent : data->food_scent;
@@ -119,7 +119,7 @@ void Ant::Sniff(Tile* tile)
     if (!adjacent_data)
       continue;
 
-    const double scent = carrying_food_ ? adjacent_data->colony_scent : adjacent_data->food_scent;
+    const float scent = carrying_food_ ? adjacent_data->colony_scent : adjacent_data->food_scent;
     if (scent > max_scent)
     {
       max_scent = scent;
@@ -188,7 +188,7 @@ void Ant::AddAntColony(GameOfLife* game, int num_ants, int i, int j)
   }
 }
 
-void TileUpdate(Tile* tile, double dt)
+void TileUpdate(Tile* tile, float dt)
 {
   auto tile_data = tile->GetData<Ant::TileData>();
   tile_data->food_scent *= glm::exp(-0.03*dt);

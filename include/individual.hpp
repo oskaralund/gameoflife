@@ -29,19 +29,19 @@ public:
   // Moves the Individual based on its velocity. Also calls ReactToTile() if the
   // individual moves to a new tile. Typically if you override this function you
   // want to call Individual::Move(dt) at the top of your override.
-  virtual void Move(double dt);
+  virtual void Move(float dt);
 
   // This function is called whenever the Individual moves to a new tile. By
   // default it does nothing. Override it to get custom behavior.
   virtual void ReactToTile(Tile* tile);
 
-  void SetPosition(glm::dvec2);
-  void SetVelocity(glm::dvec2);
-  void SetRadius(double);
-  double GetRadius() const;
-  glm::dvec2 GetPosition() const;
-  glm::dvec2 GetPreviousPosition() const;
-  glm::dvec2 GetVelocity() const;
+  void SetPosition(glm::fvec2);
+  void SetVelocity(glm::fvec2);
+  void SetRadius(float);
+  float GetRadius() const;
+  glm::fvec2 GetPosition() const;
+  glm::fvec2 GetPreviousPosition() const;
+  glm::fvec2 GetVelocity() const;
   GameOfLife* GetGame() const;
 
 protected:
@@ -50,7 +50,7 @@ protected:
   int GetId() const;
 
   // Rotates the individual's velocity toward a target.
-  void GoToward(glm::dvec2 target);
+  void GoToward(glm::fvec2 target);
 
   // Returns a container with tiles adjacent to the individual's current tile.
   // Can be used in range based for loops, e.g.:
@@ -61,18 +61,18 @@ protected:
   void SetCurrentTileType(int) const;
   Tile* GetCurrentTile() const;
   Tile* GetPreviousTile() const;
-  glm::dvec2 GetTileCenter(const Tile&);
+  glm::fvec2 GetTileCenter(const Tile&);
 
 private:
   int id_;
   int view_distance_{1};
-  glm::dvec2 position_{0,0};
-  glm::dvec2 velocity_{0,0};
-  glm::dvec2 prev_position_{0,0};
+  glm::fvec2 position_{0,0};
+  glm::fvec2 velocity_{0,0};
+  glm::fvec2 prev_position_{0,0};
   Tile* tile_{nullptr};
   Tile* prev_tile_{nullptr};
-  double speed_{0.05};
-  double radius_{0.001};
+  float speed_{0.05f};
+  float radius_{0.001f};
   GameOfLife* game_;
   static int instances;
 

@@ -268,8 +268,8 @@ void Controller::DrawBrush() const
 
 
   const auto padding = 0.3f;
-  const auto dx = static_cast<float>(game_->dx_);
-  const auto dy = static_cast<float>(game_->dy_);
+  const auto dx = game_->dx_;
+  const auto dy = game_->dy_;
 
   sf::RectangleShape rect{{dx*(1-2*padding), dy*(1-2*padding)}};
   for (int i = min_i; i <= max_i; ++i)

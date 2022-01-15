@@ -19,7 +19,7 @@ Individual::Individual(GameOfLife* game)
   prev_tile_ = GetCurrentTile();
 }
 
-void Individual::Move(double dt)
+void Individual::Move(float dt)
 {
   auto tile = GetCurrentTile();
   if (tile_ != tile)
@@ -66,28 +66,28 @@ void Individual::ReactToTile(Tile*)
 
 }
 
-void Individual::SetPosition(glm::dvec2 p)
+void Individual::SetPosition(glm::fvec2 p)
 {
   position_ = p;
   tile_ = GetCurrentTile();
 }
 
-void Individual::SetVelocity(glm::dvec2 v)
+void Individual::SetVelocity(glm::fvec2 v)
 {
   velocity_ = v;
 }
 
-glm::dvec2 Individual::GetVelocity() const
+glm::fvec2 Individual::GetVelocity() const
 {
   return velocity_;
 }
 
-glm::dvec2 Individual::GetPosition() const
+glm::fvec2 Individual::GetPosition() const
 {
   return position_;
 }
 
-glm::dvec2 Individual::GetPreviousPosition() const
+glm::fvec2 Individual::GetPreviousPosition() const
 {
   return prev_position_;
 }
@@ -97,12 +97,12 @@ GameOfLife* Individual::GetGame() const
   return game_;
 }
 
-double Individual::GetRadius() const
+float Individual::GetRadius() const
 {
   return radius_;
 }
 
-void Individual::SetRadius(double r)
+void Individual::SetRadius(float r)
 {
   radius_ = r;
 }
@@ -128,7 +128,7 @@ void Individual::SetCurrentTileType(int type) const
   game_->SetTileType(i, j, type);
 }
 
-void Individual::GoToward(glm::dvec2 target)
+void Individual::GoToward(glm::fvec2 target)
 {
   const auto dir = target - position_;
 
@@ -140,7 +140,7 @@ void Individual::GoToward(glm::dvec2 target)
   velocity_ = speed_*glm::normalize(dir);
 }
 
-glm::dvec2 Individual::GetTileCenter(const Tile& tile)
+glm::fvec2 Individual::GetTileCenter(const Tile& tile)
 {
   const auto i = tile.row;
   const auto j = tile.col;
