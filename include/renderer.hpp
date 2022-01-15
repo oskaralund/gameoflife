@@ -22,6 +22,7 @@ private:
   sf::Vector2f view_velocity_{.0f,.0f};
   sf::Clock clock_;
   sf::VertexArray grid_va_;
+  sf::VertexArray individual_va_;
   uint8_t colors_[10][4] = {
     {0, 0, 0, 255},
     {0, 255, 0, 255},
@@ -37,6 +38,7 @@ private:
 
   void DrawGrid();
   void DrawTiles();
+  void DrawIndividuals();
   void DrawOuterWalls();
 
   friend Controller;

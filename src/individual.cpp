@@ -66,15 +66,6 @@ void Individual::ReactToTile(Tile*)
 
 }
 
-void Individual::Render(sf::RenderWindow* window) const
-{
-  sf::CircleShape circ(radius_);
-  circ.setFillColor(sf::Color::Green);
-  circ.setPosition(position_.x, position_.y);
-  circ.setOrigin(circ.getRadius(), circ.getRadius());
-  window->draw(circ);
-}
-
 void Individual::SetPosition(glm::dvec2 p)
 {
   position_ = p;

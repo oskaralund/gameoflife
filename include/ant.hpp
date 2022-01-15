@@ -28,7 +28,6 @@ public:
   Ant(GameOfLife*);
   void Move(double dt) override;
   void ReactToTile(Tile*) override;
-  void Render(sf::RenderWindow* window) const override;
 
   static void AddAntColony(GameOfLife*, int num_ants, int row, int col);
 

@@ -70,15 +70,6 @@ void Ant::RandomDirectionAdjustment()
   SetVelocity(glm::rotate(GetVelocity(), angle));
 }
 
-void Ant::Render(sf::RenderWindow* window) const
-{
-  sf::CircleShape circ(GetRadius());
-  carrying_food_ ? circ.setFillColor(sf::Color::Green) : circ.setFillColor(sf::Color::White);
-  circ.setPosition(GetPosition().x, GetPosition().y);
-  circ.setOrigin(circ.getRadius(), circ.getRadius());
-  window->draw(circ);
-}
-
 void Ant::LeaveScent(Tile* tile) const
 {
   if (!tile->data)
@@ -202,12 +193,4 @@ void TileUpdate(Tile* tile, double dt)
   auto tile_data = tile->GetData<Ant::TileData>();
   tile_data->food_scent *= glm::exp(-0.03*dt);
   tile_data->colony_scent *= glm::exp(-0.03*dt);
-
-  //if (tile->type == Ant::TileType::Basic)
-  //{
-  //  tile->color[0] = tile_data->colony_scent*255;
-  //  tile->color[1] = 0;
-  //  tile->color[2] = tile_data->food_scent*255;
-  //  tile->color[3] = 255;
-  //}
 }

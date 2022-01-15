@@ -53,7 +53,7 @@ void GameOfLife::Move(double elapsed_time)
   while (time_accumulator_ - dt_ > 0)
   {
     #pragma omp parallel for
-    for (int i = 0; i < individuals_.size(); ++i)
+    for (std::size_t i = 0; i < individuals_.size(); ++i)
     {
       individuals_[i]->Move(dt_);
     }
@@ -67,9 +67,9 @@ void GameOfLife::Move(double elapsed_time)
 void GameOfLife::UpdateTiles(double dt)
 {
   #pragma omp parallel for
-  for (int i = 0; i < num_rows_; ++i)
+  for (std::size_t i = 0; i < num_rows_; ++i)
   {
-    for (int j = 0; j < num_cols_; ++j)
+    for (std::size_t j = 0; j < num_cols_; ++j)
     {
       if (tiles_[i][j].update)
       {

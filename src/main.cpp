@@ -9,7 +9,7 @@ int main()
 {
   sf::RenderWindow window{ sf::VideoMode(1000, 1000), "Game of Life" };
   GameOfLife game(200,200);
-  Ant::AddAntColony(&game, 500, 100, 100);
+  Ant::AddAntColony(&game, 1000, 100, 100);
   Renderer renderer{&window, &game};
   Controller controller(&game, &window, &renderer);
 

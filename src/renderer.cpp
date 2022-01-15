@@ -7,20 +7,19 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   : window_(window)
   , game_(game)
   , grid_va_(sf::Quads, game->num_cols_*game_->num_rows_*4)
+  , individual_va_(sf::Points, game->individuals_.size())
 {
   view_.setCenter(sf::Vector2f{0.0f, 0.0f});
   MatchWindowCameraRatio();
   window_->setView(view_);
   clock_.restart();
 
-  grid_va_.resize(game_->num_cols_*game_->num_rows_*4);
-
   const auto dx = game_->dx_;
   const auto dy = game_->dy_;
   const auto padding = 0.3;
-  for (int i = 0; i < game_->num_rows_; ++i)
+  for (std::size_t i = 0; i < game_->num_rows_; ++i)
   {
-    for (int j = 0; j < game_->num_cols_; ++j)
+    for (std::size_t j = 0; j < game_->num_cols_; ++j)
     {
       sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows_)*4];
       quad[0].position = sf::Vector2f(-1 + (j+padding)*dx, -1 + (i+padding)*dy);
@@ -46,10 +45,7 @@ void Renderer::Render()
   DrawTiles();
   //DrawGrid();
   DrawOuterWalls();
-  for (const auto& individual : game_->individuals_)
-  {
-    individual->Render(window_);
-  }
+  DrawIndividuals();
 }
 
 void Renderer::MoveCamera(sf::Vector2f delta)
@@ -110,9 +106,9 @@ void Renderer::DrawOuterWalls()
 
 void Renderer::DrawTiles()
 {
-  for (int i = 0; i < game_->num_rows_; ++i)
+  for (std::size_t i = 0; i < game_->num_rows_; ++i)
   {
-    for (int j = 0; j < game_->num_cols_; ++j)
+    for (std::size_t j = 0; j < game_->num_cols_; ++j)
     {
       sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows_)*4];
 
@@ -142,6 +138,18 @@ void Renderer::DrawTiles()
     }
   }
   window_->draw(grid_va_);
+}
+
+void Renderer::DrawIndividuals()
+{
+  for (std::size_t i = 0; i < game_->individuals_.size(); ++i)
+  {
+    sf::Vertex* point = &individual_va_[i];
+    const auto& pos = game_->individuals_[i]->GetPosition();
+    point->position = {static_cast<float>(pos[0]), static_cast<float>(pos[1])};
+    point->color = {255, 255, 255, 255};
+  }
+  window_->draw(individual_va_);
 }
 
 void Renderer::ZoomAt(sf::Vector2i pixel, float factor)

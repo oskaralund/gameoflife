@@ -21,12 +21,6 @@
 class GameOfLife;
 struct Tile;
 
-namespace sf
-{
-  class RenderWindow;
-}
-
-
 class Individual {
 public:
   // Constructs an individual and ties it to a GameOfLife object.
@@ -40,9 +34,6 @@ public:
   // This function is called whenever the Individual moves to a new tile. By
   // default it does nothing. Override it to get custom behavior.
   virtual void ReactToTile(Tile* tile);
-
-  // Specifies how to render the Individual. Defaults to a green circle.
-  virtual void Render(sf::RenderWindow* window) const;
 
   void SetPosition(glm::dvec2);
   void SetVelocity(glm::dvec2);
