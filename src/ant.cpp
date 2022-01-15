@@ -203,11 +203,11 @@ void TileUpdate(Tile* tile, double dt)
   tile_data->food_scent *= glm::exp(-0.03*dt);
   tile_data->colony_scent *= glm::exp(-0.03*dt);
 
-  if (tile->type == Ant::TileType::Basic)
-  {
-    tile->color[0] = tile_data->colony_scent*255;
-    tile->color[1] = 0;
-    tile->color[2] = tile_data->food_scent*255;
-    tile->color[3] = 255;
-  }
+  //if (tile->type == Ant::TileType::Basic)
+  //{
+  //  tile->color[0] = tile_data->colony_scent*255;
+  //  tile->color[1] = 0;
+  //  tile->color[2] = tile_data->food_scent*255;
+  //  tile->color[3] = 255;
+  //}
 }

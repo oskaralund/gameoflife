@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 class GameOfLife;
+class Controller;
 
 class Renderer {
 public:
@@ -21,10 +22,24 @@ private:
   sf::Vector2f view_velocity_{.0f,.0f};
   sf::Clock clock_;
   sf::VertexArray grid_va_;
+  uint8_t colors_[10][4] = {
+    {0, 0, 0, 255},
+    {0, 255, 0, 255},
+    {0, 255, 255, 255},
+    {80, 80, 80, 255},
+    {100, 0, 0, 255},
+    {255, 0, 255, 255},
+    {255, 255, 0, 255},
+    {160, 82, 45, 255},
+    {0, 100, 0, 255},
+    {0, 0, 100, 255}
+  };
 
   void DrawGrid();
   void DrawTiles();
   void DrawOuterWalls();
+
+  friend Controller;
 };
 
 #endif

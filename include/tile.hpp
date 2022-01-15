@@ -15,7 +15,6 @@ struct Tile {
   int col; // The column index of the tile.
   int type = 0; // Each tile has a type which Individuals can use
                 // to determine behavior (see individual.hpp).
-  std::array<uint8_t, 4> color = {0, 0, 0, 255}; // The color used when rendering the tile.
 
   // Users can store an update function to be called at each timestep.
   std::function<void(Tile*, double)> update = nullptr;

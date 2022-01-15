@@ -4,8 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include <glm/glm.hpp>
 
-#include "console.hpp"
-
 class Renderer;
 class GameOfLife;
 
@@ -27,7 +25,6 @@ private:
   sf::Text header_;
   bool paused_{false};
   double time_factor_{1.0};
-  Console console_;
 
   void KeyPressed(sf::Event);
   void MouseButtonPressed(sf::Event);
@@ -37,10 +34,6 @@ private:
   void Paint() const;
   void DrawBrush() const;
   void DrawHeader();
-  void InitializeConsole();
-
-  //Console commands
-  void Quit(std::string);
 };
 
 #endif

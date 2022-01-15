@@ -44,14 +44,6 @@ void GameOfLife::SetTileType(int i, int j, int type)
   tiles_[i][j].type = type;
   tiles_[i][j].update = nullptr;
   tiles_[i][j].data = nullptr;
-
-  if (type >= 0 && type <= 9)
-  {
-    tiles_[i][j].color[0] = colors_[type][0];
-    tiles_[i][j].color[1] = colors_[type][1];
-    tiles_[i][j].color[2] = colors_[type][2];
-    tiles_[i][j].color[3] = colors_[type][3];
-  }
 }
 
 void GameOfLife::Move(double elapsed_time)

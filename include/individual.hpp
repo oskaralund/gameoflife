@@ -68,7 +68,6 @@ protected:
   //
   AdjacentTiles GetAdjacentTiles() const;
   void SetCurrentTileType(int) const;
-  void SetCurrentTileColor(const std::array<uint8_t, 4>& color) const;
   Tile* GetCurrentTile() const;
   Tile* GetPreviousTile() const;
   glm::dvec2 GetTileCenter(const Tile&);

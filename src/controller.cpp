@@ -10,7 +10,6 @@ Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* ren
   : game_{game}
   , window_{window}
   , renderer_{renderer}
-  , console_{window, "../res/arial.ttf"}
 {
   cursor_world_pos_ = GetCursorWorldPosition();
 
@@ -18,12 +17,9 @@ Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* ren
   header_.setFont(font_);
   header_.setCharacterSize(24);
   header_.setFillColor(sf::Color::White);
-  InitializeConsole();
 }
 
 void Controller::ProcessInput() {
-  console_.ProcessInput();
-
   sf::Event event;
 
   while (window_->pollEvent(event))
@@ -76,10 +72,6 @@ void Controller::KeyPressed(sf::Event event)
         paused_ = false;
         game_->time_factor_ = time_factor_;
       }
-      break;
-
-    case -1:
-      console_.Toggle();
       break;
 
     case sf::Keyboard::Escape:
@@ -225,8 +217,6 @@ void Controller::Paint() const
 
 void Controller::Render()
 {
-  console_.Render();
-
   const auto prev_view = window_->getView();
   const auto window_size = window_->getSize();
   const auto gui_view = sf::View({0.0f, 0.0f, static_cast<float>(window_size.x), static_cast<float>(window_size.y)});
@@ -241,10 +231,10 @@ void Controller::Render()
   for (int i = 0; i < 10; ++i)
   {
     rect.setPosition({startx + i*(rect_size + padding), starty});
-    rect.setFillColor({game_->colors_[i][0],
-                       game_->colors_[i][1],
-                       game_->colors_[i][2],
-                       game_->colors_[i][3]});
+    rect.setFillColor({renderer_->colors_[i][0],
+                       renderer_->colors_[i][1],
+                       renderer_->colors_[i][2],
+                       renderer_->colors_[i][3]});
 
     if (i == selected_type_)
     {
@@ -287,10 +277,10 @@ void Controller::DrawBrush() const
     for (int j = min_j; j <= max_j; ++j)
     {
       rect.setPosition({-1 + (j+padding)*dy, -1 + (i+padding)*dx});
-      rect.setFillColor({game_->colors_[selected_type_][0],
-                         game_->colors_[selected_type_][1],
-                         game_->colors_[selected_type_][2],
-                         game_->colors_[selected_type_][3]});
+      rect.setFillColor({renderer_->colors_[selected_type_][0],
+                         renderer_->colors_[selected_type_][1],
+                         renderer_->colors_[selected_type_][2],
+                         renderer_->colors_[selected_type_][3]});
       window_->draw(rect);
     }
   }
@@ -303,15 +293,4 @@ void Controller::DrawHeader()
   std::string string = time_factor + "x\t" + paused;
   header_.setString(string);
   window_->draw(header_);
-}
-
-void Controller::InitializeConsole()
-{
-  console_.AddCommand("quit", [this](std::string s) -> void {Quit(s);});
-}
-
-//Console commands
-void Controller::Quit(std::string s)
-{
-  window_->close();
 }

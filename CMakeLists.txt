@@ -12,8 +12,7 @@ add_executable(main src/main.cpp
                     src/individual.cpp
                     src/ant.cpp
                     src/game_of_life.cpp
-                    src/adjacent_tiles.cpp
-                    src/console.cpp)
+                    src/adjacent_tiles.cpp)
 target_include_directories(main PUBLIC include)
 target_link_libraries(main PUBLIC -lsfml-graphics -lsfml-window -lsfml-system PRIVATE OpenMP::OpenMP_CXX)
 target_compile_features(main PUBLIC cxx_std_20)

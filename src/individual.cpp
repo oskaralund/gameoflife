@@ -162,15 +162,6 @@ int Individual::GetId() const
   return id_;
 }
 
-void Individual::SetCurrentTileColor(const std::array<uint8_t, 4>& color) const
-{
-  auto tile = GetCurrentTile();
-  tile->color[0] = color[0];
-  tile->color[1] = color[1];
-  tile->color[2] = color[2];
-  tile->color[3] = color[3];
-}
-
 AdjacentTiles Individual::GetAdjacentTiles() const
 {
   int i, j;
