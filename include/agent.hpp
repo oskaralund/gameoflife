@@ -1,10 +1,10 @@
 /* The Agent is one of the basic types used in the GameOfLife class.
- * It represents one individual existing inside the [-1,1]x[-1,1] square
- * on which the simulation takes place. An individual has a position
+ * It represents one agent existing inside the [-1,1]x[-1,1] square
+ * on which the simulation takes place. An agent has a position
  * and a velocity. It moves and reacts to the tiles they are on and to
  * their surrounding tiles.
  *
- * This class is meant to be subclassed in order to create individuals
+ * This class is meant to be subclassed in order to create agents
  * with custom behavior.
 */
 
@@ -23,11 +23,11 @@ struct Tile;
 
 class Agent {
 public:
-  // Constructs an individual and ties it to a GameOfLife object.
+  // Constructs an agent and ties it to a GameOfLife object.
   Agent(GameOfLife*);
 
   // Moves the Agent based on its velocity. Also calls ReactToTile() if the
-  // individual moves to a new tile. Typically if you override this function you
+  // agent moves to a new tile. Typically if you override this function you
   // want to call Agent::Move(dt) at the top of your override.
   virtual void Move(float dt);
 
@@ -46,13 +46,13 @@ public:
 
 protected:
 
-  // Returns a unique integer associated with the individual.
+  // Returns a unique integer associated with the agent.
   int GetId() const;
 
-  // Rotates the individual's velocity toward a target.
+  // Rotates the agent's velocity toward a target.
   void GoToward(glm::fvec2 target);
 
-  // Returns a container with tiles adjacent to the individual's current tile.
+  // Returns a container with tiles adjacent to the agent's current tile.
   // Can be used in range based for loops, e.g.:
   //
   //   for (auto& tile : GetAdjacentTiles()) { DoSomething(tile); }
