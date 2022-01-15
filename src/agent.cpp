@@ -1,4 +1,4 @@
-#include "individual.hpp"
+#include "agent.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -9,17 +9,17 @@
 #include "game_of_life.hpp"
 #include "tile.hpp"
 
-int Individual::instances = 0;
+int Agent::instances = 0;
 
-Individual::Individual(GameOfLife* game)
+Agent::Agent(GameOfLife* game)
   : game_(game)
 {
-  id_ = Individual::instances++;
+  id_ = Agent::instances++;
   tile_ = GetCurrentTile();
   prev_tile_ = GetCurrentTile();
 }
 
-void Individual::Move(float dt)
+void Agent::Move(float dt)
 {
   auto tile = GetCurrentTile();
   if (tile_ != tile)
@@ -33,7 +33,7 @@ void Individual::Move(float dt)
   EnforceWalls();
 }
 
-void Individual::EnforceWalls()
+void Agent::EnforceWalls()
 {
   if (position_.x < -1)
   {
@@ -61,74 +61,74 @@ void Individual::EnforceWalls()
 
 }
 
-void Individual::ReactToTile(Tile*)
+void Agent::ReactToTile(Tile*)
 {
 
 }
 
-void Individual::SetPosition(glm::fvec2 p)
+void Agent::SetPosition(glm::fvec2 p)
 {
   position_ = p;
   tile_ = GetCurrentTile();
 }
 
-void Individual::SetVelocity(glm::fvec2 v)
+void Agent::SetVelocity(glm::fvec2 v)
 {
   velocity_ = v;
 }
 
-glm::fvec2 Individual::GetVelocity() const
+glm::fvec2 Agent::GetVelocity() const
 {
   return velocity_;
 }
 
-glm::fvec2 Individual::GetPosition() const
+glm::fvec2 Agent::GetPosition() const
 {
   return position_;
 }
 
-glm::fvec2 Individual::GetPreviousPosition() const
+glm::fvec2 Agent::GetPreviousPosition() const
 {
   return prev_position_;
 }
 
-GameOfLife* Individual::GetGame() const
+GameOfLife* Agent::GetGame() const
 {
   return game_;
 }
 
-float Individual::GetRadius() const
+float Agent::GetRadius() const
 {
   return radius_;
 }
 
-void Individual::SetRadius(float r)
+void Agent::SetRadius(float r)
 {
   radius_ = r;
 }
 
-void Individual::GetCurrentTileCoords(int* i, int* j) const {
+void Agent::GetCurrentTileCoords(int* i, int* j) const {
   *i = static_cast<int>((1+position_.y)/game_->dy_);
   *j = static_cast<int>((1+position_.x)/game_->dx_);
   *i = glm::clamp(*i, 0, game_->num_rows_-1);
   *j = glm::clamp(*j, 0, game_->num_cols_-1);
 }
 
-Tile* Individual::GetCurrentTile() const
+Tile* Agent::GetCurrentTile() const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
   return &game_->tiles_[i][j];
 }
 
-void Individual::SetCurrentTileType(int type) const
+void Agent::SetCurrentTileType(int type) const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
   game_->SetTileType(i, j, type);
 }
 
-void Individual::GoToward(glm::fvec2 target)
+void Agent::GoToward(glm::fvec2 target)
 {
   const auto dir = target - position_;
 
@@ -140,7 +140,7 @@ void Individual::GoToward(glm::fvec2 target)
   velocity_ = speed_*glm::normalize(dir);
 }
 
-glm::fvec2 Individual::GetTileCenter(const Tile& tile)
+glm::fvec2 Agent::GetTileCenter(const Tile& tile)
 {
   const auto i = tile.row;
   const auto j = tile.col;
@@ -148,19 +148,19 @@ glm::fvec2 Individual::GetTileCenter(const Tile& tile)
   return {(j+0.5)*game_->dx_-1, (i+0.5)*game_->dy_-1};
 }
 
-int Individual::GetId() const
+int Agent::GetId() const
 {
   return id_;
 }
 
-AdjacentTiles Individual::GetAdjacentTiles() const
+AdjacentTiles Agent::GetAdjacentTiles() const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
   return AdjacentTiles(game_, i, j);
 }
 
-Tile* Individual::GetPreviousTile() const
+Tile* Agent::GetPreviousTile() const
 {
   return prev_tile_;
 }

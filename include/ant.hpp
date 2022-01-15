@@ -3,14 +3,14 @@
 
 #include <random>
 
-#include "individual.hpp"
+#include "agent.hpp"
 
 struct Tile;
 
-class Ant : public Individual
+class Ant : public Agent
 {
 public:
-  using Individual::Individual;
+  using Agent::Agent;
 
   enum TileType {
     Basic = 0,

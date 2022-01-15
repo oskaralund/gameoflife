@@ -1,4 +1,4 @@
-/* The Individual is one of the basic types used in the GameOfLife class.
+/* The Agent is one of the basic types used in the GameOfLife class.
  * It represents one individual existing inside the [-1,1]x[-1,1] square
  * on which the simulation takes place. An individual has a position
  * and a velocity. It moves and reacts to the tiles they are on and to
@@ -8,8 +8,8 @@
  * with custom behavior.
 */
 
-#ifndef INDIVIDUAL_HPP_
-#define INDIVIDUAL_HPP_
+#ifndef AGENT_HPP_
+#define AGENT_HPP_
 
 #include <vector>
 #include <array>
@@ -21,17 +21,17 @@
 class GameOfLife;
 struct Tile;
 
-class Individual {
+class Agent {
 public:
   // Constructs an individual and ties it to a GameOfLife object.
-  Individual(GameOfLife*);
+  Agent(GameOfLife*);
 
-  // Moves the Individual based on its velocity. Also calls ReactToTile() if the
+  // Moves the Agent based on its velocity. Also calls ReactToTile() if the
   // individual moves to a new tile. Typically if you override this function you
-  // want to call Individual::Move(dt) at the top of your override.
+  // want to call Agent::Move(dt) at the top of your override.
   virtual void Move(float dt);
 
-  // This function is called whenever the Individual moves to a new tile. By
+  // This function is called whenever the Agent moves to a new tile. By
   // default it does nothing. Override it to get custom behavior.
   virtual void ReactToTile(Tile* tile);
 

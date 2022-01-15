@@ -38,7 +38,7 @@ private:
 
   void DrawGrid();
   void DrawTiles();
-  void DrawIndividuals();
+  void DrawAgents();
   void DrawOuterWalls();
 
   friend Controller;

@@ -12,7 +12,7 @@
 #include "tile.hpp"
 
 Ant::Ant(GameOfLife* game)
-  : Individual(game)
+  : Agent(game)
 {
   exploration_ = glm::linearRand(0.0, 20.0);
   exploration_ = glm::exp(-exploration_);
@@ -20,7 +20,7 @@ Ant::Ant(GameOfLife* game)
 
 void Ant::Move(float dt)
 {
-  Individual::Move(dt);
+  Agent::Move(dt);
 
   food_scent_ *= glm::exp(-0.1*dt);
   colony_scent_ *= glm::exp(-0.1*dt);
@@ -184,7 +184,7 @@ void Ant::AddAntColony(GameOfLife* game, int num_ants, int i, int j)
     auto theta = glm::linearRand(0.0, 2.0*3.14);
     ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
     ant->SetPosition(pos);
-    game->AddIndividual(std::move(ant));
+    game->AddAgent(std::move(ant));
   }
 }
 

@@ -1,6 +1,6 @@
 /* A GameOfLife object is a variant of Conway's game of life with continuous
  * elements. It discretizes the square [-1,1]x[-1,1] into a grid of Tile
- * objects. On this grid, so-called Individuals move around continuously, and
+ * objects. On this grid, so-called Agents move around continuously, and
  * react as they transition between Tiles.
 */
 
@@ -14,7 +14,7 @@
 #include <glm/glm.hpp>
 
 #include "tile.hpp"
-#include "individual.hpp"
+#include "agent.hpp"
 
 class Controller;
 class Renderer;
@@ -25,7 +25,7 @@ public:
   GameOfLife(); // Constructs a 100x100 GameOfLife object.
   GameOfLife(int rows, int cols); // Constructs a rows x cols GameOfLife object.
   void Move(float elapsed_time); // Move forward in time.
-  void AddIndividual(std::unique_ptr<Individual>);
+  void AddAgent(std::unique_ptr<Agent>);
   void SetTileType(int i, int j, int type);
   Tile* GetTile(int, int);
   glm::dvec2 GetTileCenter(int i, int j) const;
@@ -41,7 +41,7 @@ private:
   float dt_{1.0f/60.0f};
   float time_accumulator_{0.0f};
   float time_factor_{1.0f};
-  std::vector<std::unique_ptr<Individual>> individuals_;
+  std::vector<std::unique_ptr<Agent>> individuals_;
   std::vector<std::vector<Tile>> tiles_;
 
   void Initialize();
@@ -50,7 +50,7 @@ private:
 
   friend Renderer;
   friend Controller;
-  friend Individual;
+  friend Agent;
 };
 
 #endif

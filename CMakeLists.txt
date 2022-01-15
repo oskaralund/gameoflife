@@ -9,7 +9,7 @@ find_package(OpenMP REQUIRED)
 add_executable(main src/main.cpp
                     src/renderer.cpp
                     src/controller.cpp
-                    src/individual.cpp
+                    src/agent.cpp
                     src/ant.cpp
                     src/game_of_life.cpp
                     src/adjacent_tiles.cpp)

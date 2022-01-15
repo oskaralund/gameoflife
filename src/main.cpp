@@ -7,7 +7,7 @@
 
 int main()
 {
-  sf::RenderWindow window{ sf::VideoMode(1000, 1000), "Game of Life" };
+  sf::RenderWindow window{ sf::VideoMode(500, 500), "Game of Life" };
   GameOfLife game(200,200);
   Ant::AddAntColony(&game, 1000, 100, 100);
   Renderer renderer{&window, &game};

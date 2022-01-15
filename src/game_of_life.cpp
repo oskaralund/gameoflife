@@ -2,7 +2,6 @@
 
 #include <glm/gtc/random.hpp>
 
-#include "individual.hpp"
 #include "ant.hpp"
 
 GameOfLife::GameOfLife()
@@ -102,7 +101,7 @@ int GameOfLife::GetNumCols() const
   return num_cols_;
 }
 
-void GameOfLife::AddIndividual(std::unique_ptr<Individual> individual)
+void GameOfLife::AddAgent(std::unique_ptr<Agent> individual)
 {
   individuals_.push_back(std::move(individual));
 }

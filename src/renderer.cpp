@@ -45,7 +45,7 @@ void Renderer::Render()
   DrawTiles();
   //DrawGrid();
   DrawOuterWalls();
-  DrawIndividuals();
+  DrawAgents();
 }
 
 void Renderer::MoveCamera(sf::Vector2f delta)
@@ -140,7 +140,7 @@ void Renderer::DrawTiles()
   window_->draw(grid_va_);
 }
 
-void Renderer::DrawIndividuals()
+void Renderer::DrawAgents()
 {
   for (std::size_t i = 0; i < game_->individuals_.size(); ++i)
   {
