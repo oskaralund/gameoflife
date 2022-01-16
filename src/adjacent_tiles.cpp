@@ -10,9 +10,9 @@ AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(GameOfLife* game, in
   , center_i_(i)
   , center_j_(j)
 {
-  max_row_ = glm::min(i+1, game->GetNumRows()-1);
+  max_row_ = glm::min(i+1, game->num_rows()-1);
   min_row_ = glm::max(i-1, 0);
-  max_col_ = glm::min(j+1, game->GetNumCols()-1);
+  max_col_ = glm::min(j+1, game->num_cols()-1);
   min_col_ = glm::max(j-1, 0);
   i_ = min_row_;
   j_ = min_col_;

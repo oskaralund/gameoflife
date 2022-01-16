@@ -52,9 +52,9 @@ void GameOfLife::Move(float elapsed_time)
   while (time_accumulator_ - dt_ > 0)
   {
     #pragma omp parallel for
-    for (std::size_t i = 0; i < individuals_.size(); ++i)
+    for (std::size_t i = 0; i < agents_.size(); ++i)
     {
-      individuals_[i]->Move(dt_);
+      agents_[i]->Move(dt_);
     }
 
     time_accumulator_ -= dt_;
@@ -91,17 +91,22 @@ glm::dvec2 GameOfLife::GetTileCenter(int i, int j) const
   return {(j+0.5)*dx_-1, (i+0.5)*dy_-1};
 }
 
-int GameOfLife::GetNumRows() const
+const int& GameOfLife::num_rows() const
 {
   return num_rows_;
 }
 
-int GameOfLife::GetNumCols() const
+const int& GameOfLife::num_cols() const
 {
   return num_cols_;
 }
 
-void GameOfLife::AddAgent(std::unique_ptr<Agent> individual)
+void GameOfLife::AddAgent(std::unique_ptr<Agent> agent)
 {
-  individuals_.push_back(std::move(individual));
+  agents_.push_back(std::move(agent));
+}
+
+Agent* GameOfLife::GetAgent(int i)
+{ 
+  return agents_[i].get();
 }

@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "game_of_life.hpp"
-#include "renderer.hpp"
+#include "ant_renderer.hpp"
 #include "controller.hpp"
 #include "ant.hpp"
 
@@ -10,7 +10,7 @@ int main()
   sf::RenderWindow window{ sf::VideoMode(500, 500), "Game of Life" };
   GameOfLife game(200,200);
   Ant::AddAntColony(&game, 1000, 100, 100);
-  Renderer renderer{&window, &game};
+  AntRenderer renderer{&window, &game};
   Controller controller(&game, &window, &renderer);
 
   sf::Clock clock;

@@ -17,7 +17,6 @@
 #include "agent.hpp"
 
 class Controller;
-class Renderer;
 
 class GameOfLife
 {
@@ -28,10 +27,14 @@ public:
   void AddAgent(std::unique_ptr<Agent>);
   void SetTileType(int i, int j, int type);
   Tile* GetTile(int, int);
+  Agent* GetAgent(int);
   glm::dvec2 GetTileCenter(int i, int j) const;
 
-  int GetNumRows() const;
-  int GetNumCols() const;
+  const int& num_rows() const;
+  const int& num_cols() const;
+  const float& dx() const { return dx_; }
+  const float& dy() const { return dy_; }
+  int num_agents() const { return agents_.size(); }
 
 private:
   int num_rows_{100};
@@ -41,16 +44,14 @@ private:
   float dt_{1.0f/60.0f};
   float time_accumulator_{0.0f};
   float time_factor_{1.0f};
-  std::vector<std::unique_ptr<Agent>> individuals_;
+  std::vector<std::unique_ptr<Agent>> agents_;
   std::vector<std::vector<Tile>> tiles_;
 
   void Initialize();
   void UpdateTiles(float dt);
   void PositionToTile(glm::dvec2, int*, int*) const;
 
-  friend Renderer;
   friend Controller;
-  friend Agent;
 };
 
 #endif

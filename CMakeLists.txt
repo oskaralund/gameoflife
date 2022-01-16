@@ -8,6 +8,7 @@ find_package(OpenMP REQUIRED)
 
 add_executable(main src/main.cpp
                     src/renderer.cpp
+                    src/ant_renderer.cpp
                     src/controller.cpp
                     src/agent.cpp
                     src/ant.cpp

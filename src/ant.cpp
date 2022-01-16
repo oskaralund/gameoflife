@@ -163,9 +163,9 @@ void Ant::InvestigateFood(Tile* tile)
 
 void Ant::AddAntColony(GameOfLife* game, int num_ants, int i, int j)
 {
-  int max_i = glm::min(i+1, game->GetNumRows()-1);
+  int max_i = glm::min(i+1, game->num_rows()-1);
   int min_i = glm::max(i-1, 0);
-  int max_j = glm::min(j+1, game->GetNumCols()-1);
+  int max_j = glm::min(j+1, game->num_cols()-1);
   int min_j = glm::max(j-1, 0);
 
   for (int i = min_i; i <= max_i; ++i)

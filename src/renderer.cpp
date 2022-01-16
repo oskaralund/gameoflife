@@ -6,22 +6,22 @@
 Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   : window_(window)
   , game_(game)
-  , grid_va_(sf::Quads, game->num_cols_*game_->num_rows_*4)
-  , individual_va_(sf::Points, game->individuals_.size())
+  , grid_va_(sf::Quads, game->num_cols()*game_->num_rows()*4)
+  , individual_va_(sf::Points, game->num_agents())
 {
   view_.setCenter(sf::Vector2f{0.0f, 0.0f});
   MatchWindowCameraRatio();
   window_->setView(view_);
   clock_.restart();
 
-  const auto dx = game_->dx_;
-  const auto dy = game_->dy_;
+  const auto dx = game_->dx();
+  const auto dy = game_->dy();
   const auto padding = 0.3;
-  for (std::size_t i = 0; i < game_->num_rows_; ++i)
+  for (std::size_t i = 0; i < game_->num_rows(); ++i)
   {
-    for (std::size_t j = 0; j < game_->num_cols_; ++j)
+    for (std::size_t j = 0; j < game_->num_cols(); ++j)
     {
-      sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows_)*4];
+      sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows())*4];
       quad[0].position = sf::Vector2f(-1 + (j+padding)*dx, -1 + (i+padding)*dy);
       quad[1].position = sf::Vector2f(-1 + (j+1-padding)*dx, -1 + (i+padding)*dy);
       quad[2].position = sf::Vector2f(-1 + (j+1-padding)*dx, -1 + (i+1-padding)*dy);
@@ -62,9 +62,9 @@ void Renderer::Zoom(float factor)
 
 void Renderer::DrawGrid()
 {
-  for (int i = 0; i < game_->num_rows_+1; ++i)
+  for (int i = 0; i < game_->num_rows()+1; ++i)
   {
-    const auto y = -1 + 2*i/static_cast<float>(game_->num_rows_);
+    const auto y = -1 + 2*i/static_cast<float>(game_->num_rows());
     sf::Vertex line[] =
     {
       sf::Vertex(sf::Vector2f(-1, y)),
@@ -74,9 +74,9 @@ void Renderer::DrawGrid()
     window_->draw(line, 2, sf::Lines);
   }
 
-  for (int i = 0; i < game_->num_cols_+1; ++i)
+  for (int i = 0; i < game_->num_cols()+1; ++i)
   {
-    const auto x = -1 + 2*i/static_cast<float>(game_->num_cols_);
+    const auto x = -1 + 2*i/static_cast<float>(game_->num_cols());
     sf::Vertex line[] =
     {
       sf::Vertex(sf::Vector2f(x, -1)),
@@ -106,31 +106,20 @@ void Renderer::DrawOuterWalls()
 
 void Renderer::DrawTiles()
 {
-  for (std::size_t i = 0; i < game_->num_rows_; ++i)
+  for (std::size_t i = 0; i < game_->num_rows(); ++i)
   {
-    for (std::size_t j = 0; j < game_->num_cols_; ++j)
+    for (std::size_t j = 0; j < game_->num_rows(); ++j)
     {
-      sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows_)*4];
+      sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows())*4];
 
-      auto tile = game_->tiles_[i][j];
-      auto& tile_type = tile.type;
+      auto tile = game_->GetTile(i, j);
+      auto& tile_type = tile->type;
 
       sf::Color color;
-      auto tile_data = tile.GetData<Ant::TileData>();
-      if (tile.type == Ant::TileType::Basic && tile_data)
-      {
-        color.r = tile_data->colony_scent*255;
-        color.g = 0;
-        color.b = tile_data->food_scent*255;
-        color.a = 255;
-      }
-      else
-      {
-        color.r = colors_[tile_type][0];
-        color.g = colors_[tile_type][1];
-        color.b = colors_[tile_type][2];
-        color.a = colors_[tile_type][3];
-      }
+      color.r = colors_[tile_type%10][0];
+      color.g = colors_[tile_type%10][1];
+      color.b = colors_[tile_type%10][2];
+      color.a = colors_[tile_type%10][3];
       quad[0].color = color;
       quad[1].color = color;
       quad[2].color = color;
@@ -142,10 +131,10 @@ void Renderer::DrawTiles()
 
 void Renderer::DrawAgents()
 {
-  for (std::size_t i = 0; i < game_->individuals_.size(); ++i)
+  for (std::size_t i = 0; i < game_->num_agents(); ++i)
   {
     sf::Vertex* point = &individual_va_[i];
-    const auto& pos = game_->individuals_[i]->GetPosition();
+    const auto& pos = game_->GetAgent(i)->GetPosition();
     point->position = {static_cast<float>(pos[0]), static_cast<float>(pos[1])};
     point->color = {255, 255, 255, 255};
   }

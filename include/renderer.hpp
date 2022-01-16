@@ -15,12 +15,13 @@ public:
   void ZoomAt(sf::Vector2i pixel, float factor);
   void MatchWindowCameraRatio();
 
-private:
+protected:
+  virtual void DrawGrid();
+  virtual void DrawTiles();
+  virtual void DrawAgents();
+  virtual void DrawOuterWalls();
   sf::RenderWindow* window_;
   GameOfLife* game_;
-  sf::View view_;
-  sf::Vector2f view_velocity_{.0f,.0f};
-  sf::Clock clock_;
   sf::VertexArray grid_va_;
   sf::VertexArray individual_va_;
   uint8_t colors_[10][4] = {
@@ -36,10 +37,10 @@ private:
     {0, 0, 100, 255}
   };
 
-  void DrawGrid();
-  void DrawTiles();
-  void DrawAgents();
-  void DrawOuterWalls();
+private:
+  sf::View view_;
+  sf::Vector2f view_velocity_{.0f,.0f};
+  sf::Clock clock_;
 
   friend Controller;
 };

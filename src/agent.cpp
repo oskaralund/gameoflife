@@ -108,17 +108,17 @@ void Agent::SetRadius(float r)
 }
 
 void Agent::GetCurrentTileCoords(int* i, int* j) const {
-  *i = static_cast<int>((1+position_.y)/game_->dy_);
-  *j = static_cast<int>((1+position_.x)/game_->dx_);
-  *i = glm::clamp(*i, 0, game_->num_rows_-1);
-  *j = glm::clamp(*j, 0, game_->num_cols_-1);
+  *i = static_cast<int>((1+position_.y)/game_->dy());
+  *j = static_cast<int>((1+position_.x)/game_->dx());
+  *i = glm::clamp(*i, 0, game_->num_rows()-1);
+  *j = glm::clamp(*j, 0, game_->num_cols()-1);
 }
 
 Tile* Agent::GetCurrentTile() const
 {
   int i, j;
   GetCurrentTileCoords(&i, &j);
-  return &game_->tiles_[i][j];
+  return game_->GetTile(i, j);
 }
 
 void Agent::SetCurrentTileType(int type) const
@@ -145,7 +145,7 @@ glm::fvec2 Agent::GetTileCenter(const Tile& tile)
   const auto i = tile.row;
   const auto j = tile.col;
 
-  return {(j+0.5)*game_->dx_-1, (i+0.5)*game_->dy_-1};
+  return {(j+0.5)*game_->dx()-1, (i+0.5)*game_->dy()-1};
 }
 
 int Agent::GetId() const
