@@ -16,6 +16,7 @@ Ant::Ant(GameOfLife* game)
 {
   exploration_ = glm::linearRand(0.0, 20.0);
   exploration_ = glm::exp(-exploration_);
+  turning_time_ = glm::linearRand(0.0, 5.0);
 }
 
 void Ant::Move(float dt)
