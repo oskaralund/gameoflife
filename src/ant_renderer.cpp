@@ -5,6 +5,10 @@
 #include "game_of_life.hpp"
 #include "ant.hpp"
 
+namespace ants
+{
+
+
 void AntRenderer::DrawTiles()
 {
   for (std::size_t i = 0; i < game_->num_rows(); ++i)
@@ -17,8 +21,8 @@ void AntRenderer::DrawTiles()
       auto& tile_type = tile->type;
 
       sf::Color color;
-      auto tile_data = tile->GetData<Ant::TileData>();
-      if (tile->type == Ant::TileType::Basic && tile_data)
+      auto tile_data = tile->GetData<TileData>();
+      if (tile->type == TileType::Basic && tile_data)
       {
         color.r = tile_data->colony_scent*255;
         color.g = 0;
@@ -40,3 +44,6 @@ void AntRenderer::DrawTiles()
   }
   window_->draw(grid_va_);
 }
+
+
+} // namespace ants

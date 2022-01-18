@@ -10,6 +10,7 @@ add_executable(main src/main.cpp
                     src/renderer.cpp
                     src/ant_renderer.cpp
                     src/controller.cpp
+                    src/ant_controller.cpp
                     src/agent.cpp
                     src/ant.cpp
                     src/game_of_life.cpp

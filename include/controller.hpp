@@ -14,6 +14,13 @@ public:
   void ProcessInput();
   void Render();
 
+protected:
+  uint8_t GetSelectedBrushType() const { return selected_type_; }
+  uint8_t GetBrushSize() const { return brush_size_; }
+  sf::Vector2f GetCursorWorldPosition() const;
+  virtual void Paint() const;
+  GameOfLife* GetGame() const { return game_; }
+
 private:
   GameOfLife* game_;
   sf::RenderWindow* window_;
@@ -30,8 +37,6 @@ private:
   void MouseButtonPressed(sf::Event);
   void MouseMoved(sf::Event);
   void MouseWheelScrolled(sf::Event);
-  sf::Vector2f GetCursorWorldPosition() const;
-  void Paint() const;
   void DrawBrush() const;
   void DrawHeader();
 };

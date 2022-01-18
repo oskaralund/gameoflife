@@ -3,6 +3,10 @@
 
 #include "renderer.hpp"
 
+namespace ants
+{
+
+
 class AntRenderer : public Renderer
 {
 public:
@@ -10,5 +14,8 @@ public:
 private:
   void DrawTiles() override;
 };
+
+
+} // namespace ants
 
 #endif

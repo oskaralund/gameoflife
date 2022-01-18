@@ -29,6 +29,7 @@ public:
   Tile* GetTile(int, int);
   Agent* GetAgent(int);
   glm::dvec2 GetTileCenter(int i, int j) const;
+  void PositionToTile(glm::fvec2, int*, int*) const;
 
   const int& num_rows() const;
   const int& num_cols() const;
@@ -49,7 +50,6 @@ private:
 
   void Initialize();
   void UpdateTiles(float dt);
-  void PositionToTile(glm::dvec2, int*, int*) const;
 
   friend Controller;
 };

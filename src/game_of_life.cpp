@@ -41,8 +41,6 @@ Tile* GameOfLife::GetTile(int i, int j)
 void GameOfLife::SetTileType(int i, int j, int type)
 {
   tiles_[i][j].type = type;
-  tiles_[i][j].update = nullptr;
-  tiles_[i][j].data = nullptr;
 }
 
 void GameOfLife::Move(float elapsed_time)
@@ -78,7 +76,7 @@ void GameOfLife::UpdateTiles(float dt)
   }
 }
 
-void GameOfLife::PositionToTile(glm::dvec2 pos, int* i, int* j) const
+void GameOfLife::PositionToTile(glm::fvec2 pos, int* i, int* j) const
 {
   *i = static_cast<int>((1+pos.y)/dy_);
   *j = static_cast<int>((1+pos.x)/dx_);
