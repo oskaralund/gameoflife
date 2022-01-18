@@ -8,6 +8,7 @@
 int main()
 {
   sf::RenderWindow window{ sf::VideoMode(500, 500), "Game of Life" };
+  window.setFramerateLimit(60);
   GameOfLife game(200,200);
   ants::InitializeTiles(&game);
   ants::AddAntColony(&game, 1000, 100, 100);

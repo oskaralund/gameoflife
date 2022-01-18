@@ -72,7 +72,6 @@ private:
   Tile* tile_{nullptr};
   Tile* prev_tile_{nullptr};
   float speed_{0.05f};
-  float radius_{0.001f};
   GameOfLife* game_;
   static int instances;
 

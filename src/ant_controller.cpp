@@ -28,6 +28,7 @@ void AntController::Paint() const
       if (brush_type == TileType::Food)
       {
         auto tile_data = game->GetTile(i, j)->GetData<TileData>();
+        tile_data->food_scent = 1.0f;
         tile_data->food = 500;
       }
       game->SetTileType(i, j, brush_type);

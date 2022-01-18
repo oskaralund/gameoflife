@@ -112,13 +112,18 @@ void Ant::Sniff(Tile* tile)
 
   if (smelliest_tile == tile)
   {
-    carrying_food_ ? data->colony_scent = 0.0 : data->food_scent = 0.0;
+    if (tile->type != TileType::Food) { data->food_scent = 0.0f; }
     return;
   }
 
   const auto rand = glm::linearRand(0.0, 1.0);
   if (rand > exploration_)
-    GoToward(GetTileCenter(*smelliest_tile));
+  {
+    const auto new_dir = glm::normalize(GetTileCenter(*smelliest_tile) - GetPosition());
+    const auto cur_dir = glm::normalize(GetVelocity());
+    SetVelocity(0.05f*glm::normalize(0.5f*new_dir + 0.5f*cur_dir));
+    //GoToward(GetTileCenter(*smelliest_tile));
+  }
 }
 
 void Ant::InvestigateFood(Tile* tile)
@@ -135,7 +140,6 @@ void Ant::InvestigateFood(Tile* tile)
     carrying_food_ = true;
     food_scent_ = 1.0;
   }
-
 }
 
 void AddAntColony(GameOfLife* game, int num_ants, int i, int j)
@@ -168,8 +172,12 @@ void AddAntColony(GameOfLife* game, int num_ants, int i, int j)
 void TileUpdate(Tile* tile, float dt)
 {
   auto tile_data = tile->GetData<TileData>();
-  tile_data->food_scent *= glm::exp(-0.03*dt);
-  tile_data->colony_scent *= glm::exp(-0.03*dt);
+
+  if (tile->type != TileType::Food)
+    tile_data->food_scent *= glm::exp(-0.03*dt);
+
+  if (tile->type != TileType::Colony)
+    tile_data->colony_scent *= glm::exp(-0.03*dt);
 }
 
 void InitializeTiles(GameOfLife* game)

@@ -97,16 +97,6 @@ GameOfLife* Agent::GetGame() const
   return game_;
 }
 
-float Agent::GetRadius() const
-{
-  return radius_;
-}
-
-void Agent::SetRadius(float r)
-{
-  radius_ = r;
-}
-
 void Agent::GetCurrentTileCoords(int* i, int* j) const {
   *i = static_cast<int>((1+position_.y)/game_->dy());
   *j = static_cast<int>((1+position_.x)/game_->dx());
