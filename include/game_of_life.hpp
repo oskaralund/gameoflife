@@ -9,7 +9,6 @@
 
 #include <vector>
 #include <memory>
-#include <map>
 #include <functional>
 
 #include <glm/glm.hpp>
@@ -19,8 +18,7 @@
 
 class Controller;
 
-class GameOfLife
-{
+class GameOfLife {
 public:
   GameOfLife(); // Constructs a 100x100 GameOfLife object.
   GameOfLife(int rows, int cols); // Constructs a rows x cols GameOfLife object.
@@ -28,7 +26,8 @@ public:
   void AddAgent(std::unique_ptr<Agent>);
   void SetTileType(int i, int j, int type);
   Tile* GetTile(int, int);
-  Agent* GetAgent(int);
+  Agent* GetAgent(uint32_t id);
+  void RemoveAgent(uint32_t id);
   glm::dvec2 GetTileCenter(int i, int j) const;
   void PositionToTile(glm::fvec2, int*, int*) const;
 

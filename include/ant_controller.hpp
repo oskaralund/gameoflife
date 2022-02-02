@@ -3,12 +3,10 @@
 
 #include "controller.hpp"
 
-namespace ants
-{
+namespace ants {
 
 
-class AntController : public Controller
-{
+class AntController : public Controller {
 public:
   using Controller::Controller;
 

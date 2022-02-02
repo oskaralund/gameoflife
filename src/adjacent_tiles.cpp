@@ -6,10 +6,9 @@
 
 
 AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(GameOfLife* game, int i, int j)
-  : game_(game)
-  , center_i_(i)
-  , center_j_(j)
-{
+    : game_(game)
+    , center_i_(i)
+    , center_j_(j) {
   max_row_ = glm::min(i+1, game->num_rows()-1);
   min_row_ = glm::max(i-1, 0);
   max_col_ = glm::min(j+1, game->num_cols()-1);
@@ -20,61 +19,49 @@ AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(GameOfLife* game, in
 }
 
 AdjacentTiles::AdjacentTilesIterator::AdjacentTilesIterator(Tile* tile)
-  : ptr_(tile)
-  , center_i_(tile->row)
-  , center_j_(tile->col)
-{}
+    : ptr_(tile)
+    , center_i_(tile->row)
+    , center_j_(tile->col) {}
 
-AdjacentTiles::AdjacentTilesIterator& AdjacentTiles::AdjacentTilesIterator::operator++()
-{
-  if (j_ == max_col_)
-  {
+AdjacentTiles::AdjacentTilesIterator& AdjacentTiles::AdjacentTilesIterator::operator++() {
+  if (j_ == max_col_) {
     j_ = min_col_;
     ++i_;
   }
-  else
-  {
+  else {
     ++j_;
   }
 
-  if (i_ == center_i_ && j_ == center_j_)
-  {
-    if (j_ == max_col_)
-    {
+  if (i_ == center_i_ && j_ == center_j_) {
+    if (j_ == max_col_) {
       j_ = min_col_;
       ++i_;
     }
-    else
-    {
+    else {
       ++j_;
     }
   }
 
-  if (i_ == max_row_+1)
-  {
+  if (i_ == max_row_+1) {
     ptr_ = game_->GetTile(center_i_, center_j_);
   }
-  else
-  {
+  else {
     ptr_ = game_->GetTile(i_, j_);
   }
 
   return *this;
 }
 
-AdjacentTiles::AdjacentTilesIterator AdjacentTiles::AdjacentTilesIterator::operator++(int)
-{
+AdjacentTiles::AdjacentTilesIterator AdjacentTiles::AdjacentTilesIterator::operator++(int) {
   AdjacentTilesIterator tmp = *this;
   ++(*this);
   return tmp;
 }
 
-AdjacentTiles::AdjacentTilesIterator AdjacentTiles::begin()
-{
+AdjacentTiles::AdjacentTilesIterator AdjacentTiles::begin() {
   return AdjacentTilesIterator(game_, i_, j_);
 }
 
-AdjacentTiles::AdjacentTilesIterator AdjacentTiles::end()
-{
+AdjacentTiles::AdjacentTilesIterator AdjacentTiles::end() {
   return AdjacentTilesIterator(game_->GetTile(i_, j_));
 }

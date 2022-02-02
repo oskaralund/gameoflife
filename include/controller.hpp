@@ -7,8 +7,7 @@
 class Renderer;
 class GameOfLife;
 
-class Controller
-{
+class Controller {
 public:
   Controller(GameOfLife*, sf::RenderWindow*, Renderer*);
   void ProcessInput();

@@ -4,11 +4,10 @@
 #include "ant.hpp"
 
 Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
-  : window_(window)
-  , game_(game)
-  , grid_va_(sf::Quads, game->num_cols()*game_->num_rows()*4)
-  , individual_va_(sf::Points, game->num_agents())
-{
+    : window_(window)
+    , game_(game)
+    , grid_va_(sf::Quads, game->num_cols()*game_->num_rows()*4)
+    , individual_va_(sf::Points, game->num_agents()) {
   view_.setCenter(sf::Vector2f{0.0f, 0.0f});
   MatchWindowCameraRatio();
   window_->setView(view_);
@@ -17,10 +16,8 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   const auto dx = game_->dx();
   const auto dy = game_->dy();
   const auto padding = 0.3;
-  for (std::size_t i = 0; i < game_->num_rows(); ++i)
-  {
-    for (std::size_t j = 0; j < game_->num_cols(); ++j)
-    {
+  for (std::size_t i = 0; i < game_->num_rows(); ++i) {
+    for (std::size_t j = 0; j < game_->num_cols(); ++j) {
       sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows())*4];
       quad[0].position = sf::Vector2f(-1 + (j+padding)*dx, -1 + (i+padding)*dy);
       quad[1].position = sf::Vector2f(-1 + (j+1-padding)*dx, -1 + (i+padding)*dy);
@@ -35,8 +32,7 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   }
 }
 
-void Renderer::Render()
-{
+void Renderer::Render() {
   sf::Time elapsed_time = clock_.getElapsedTime();
   clock_.restart();
   view_.move(view_velocity_*elapsed_time.asSeconds());
@@ -48,22 +44,18 @@ void Renderer::Render()
   DrawAgents();
 }
 
-void Renderer::MoveCamera(sf::Vector2f delta)
-{
+void Renderer::MoveCamera(sf::Vector2f delta) {
   view_.move(delta);
   window_->setView(view_);
 }
 
-void Renderer::Zoom(float factor)
-{
+void Renderer::Zoom(float factor) {
   view_.zoom(factor);
   window_->setView(view_);
 }
 
-void Renderer::DrawGrid()
-{
-  for (int i = 0; i < game_->num_rows()+1; ++i)
-  {
+void Renderer::DrawGrid() {
+  for (int i = 0; i < game_->num_rows()+1; ++i) {
     const auto y = -1 + 2*i/static_cast<float>(game_->num_rows());
     sf::Vertex line[] =
     {
@@ -74,8 +66,7 @@ void Renderer::DrawGrid()
     window_->draw(line, 2, sf::Lines);
   }
 
-  for (int i = 0; i < game_->num_cols()+1; ++i)
-  {
+  for (int i = 0; i < game_->num_cols()+1; ++i) {
     const auto x = -1 + 2*i/static_cast<float>(game_->num_cols());
     sf::Vertex line[] =
     {
@@ -88,10 +79,8 @@ void Renderer::DrawGrid()
 
 }
 
-void Renderer::DrawOuterWalls()
-{
-  sf::Vertex lines[] =
-  {
+void Renderer::DrawOuterWalls() {
+  sf::Vertex lines[] = {
     sf::Vertex(sf::Vector2f(-1, -1)),
     sf::Vertex(sf::Vector2f(1, -1)),
     sf::Vertex(sf::Vector2f(-1, 1)),
@@ -104,12 +93,9 @@ void Renderer::DrawOuterWalls()
   window_->draw(lines, 8, sf::Lines);
 }
 
-void Renderer::DrawTiles()
-{
-  for (std::size_t i = 0; i < game_->num_rows(); ++i)
-  {
-    for (std::size_t j = 0; j < game_->num_rows(); ++j)
-    {
+void Renderer::DrawTiles() {
+  for (std::size_t i = 0; i < game_->num_rows(); ++i) {
+    for (std::size_t j = 0; j < game_->num_rows(); ++j) {
       sf::Vertex* quad = &grid_va_[(i + j*game_->num_rows())*4];
 
       auto tile = game_->GetTile(i, j);
@@ -129,10 +115,8 @@ void Renderer::DrawTiles()
   window_->draw(grid_va_);
 }
 
-void Renderer::DrawAgents()
-{
-  for (std::size_t i = 0; i < game_->num_agents(); ++i)
-  {
+void Renderer::DrawAgents() {
+  for (std::size_t i = 0; i < game_->num_agents(); ++i) {
     sf::Vertex* point = &individual_va_[i];
     const auto& pos = game_->GetAgent(i)->position();
     point->position = {static_cast<float>(pos[0]), static_cast<float>(pos[1])};
@@ -141,8 +125,7 @@ void Renderer::DrawAgents()
   window_->draw(individual_va_);
 }
 
-void Renderer::ZoomAt(sf::Vector2i pixel, float factor)
-{
+void Renderer::ZoomAt(sf::Vector2i pixel, float factor) {
   const sf::Vector2f before_coord{window_->mapPixelToCoords(pixel)};
   view_.zoom(factor);
   window_->setView(view_);
@@ -152,8 +135,7 @@ void Renderer::ZoomAt(sf::Vector2i pixel, float factor)
   window_->setView(view_);
 }
 
-void Renderer::MatchWindowCameraRatio()
-{
+void Renderer::MatchWindowCameraRatio() {
   const auto window_size = window_->getSize();
   const auto width = static_cast<float>(window_size.x);
   const auto height = static_cast<float>(window_size.y);

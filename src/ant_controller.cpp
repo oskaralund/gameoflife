@@ -7,8 +7,7 @@ namespace ants
 {
 
 
-void AntController::Paint() const
-{
+void AntController::Paint() const {
   auto cursor = GetCursorWorldPosition();
   auto brush_type = GetSelectedBrushType();
   auto brush_size = GetBrushSize();
@@ -21,12 +20,9 @@ void AntController::Paint() const
   int min_j = glm::max(j-brush_size, 0);
 
 
-  for (int i = min_i; i <= max_i; ++i)
-  {
-    for (int j = min_j; j <= max_j; ++j)
-    {
-      if (brush_type == TileType::Food)
-      {
+  for (int i = min_i; i <= max_i; ++i) {
+    for (int j = min_j; j <= max_j; ++j) {
+      if (brush_type == TileType::Food) {
         auto tile_data = game->GetTile(i, j)->GetData<TileData>();
         tile_data->food_scent = 1.0f;
         tile_data->food = 500;

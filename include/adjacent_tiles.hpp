@@ -8,13 +8,11 @@
 
 class GameOfLife;
 
-class AdjacentTiles
-{
+class AdjacentTiles {
 public:
   AdjacentTiles(GameOfLife* game, int i, int j) : game_(game), i_(i), j_(j) {}
 
-  struct AdjacentTilesIterator
-  {
+  struct AdjacentTilesIterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type   = std::ptrdiff_t;
     using value_type        = Tile;

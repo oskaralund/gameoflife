@@ -8,8 +8,7 @@
 struct Tile;
 class GameOfLife;
 
-namespace ants
-{
+namespace ants {
 
 enum TileType {
   Basic = 0,
@@ -32,8 +31,7 @@ void TileUpdate(Tile*, float dt);
 // spawning ants.
 void InitializeTiles(GameOfLife* game);
 
-class Ant : public Agent
-{
+class Ant : public Agent {
 public:
   using Agent::Agent;
   Ant(GameOfLife*);
@@ -57,6 +55,7 @@ private:
 };
 
 void AddAntColony(GameOfLife*, int num_ants, int row, int col);
+void AddAnt(GameOfLife*);
 
 } // namespace ants
 #endif

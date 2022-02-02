@@ -25,8 +25,7 @@ struct Tile {
   // In order to retrieve user data, you can use the GetData<T>()
   // function. It will return a shared_ptr to the specified type T.
   template<typename T>
-  auto GetData()
-  {
+  auto GetData() {
     return std::static_pointer_cast<T>(data);
   }
 };

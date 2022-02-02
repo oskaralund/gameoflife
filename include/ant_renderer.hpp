@@ -7,8 +7,7 @@ namespace ants
 {
 
 
-class AntRenderer : public Renderer
-{
+class AntRenderer : public Renderer {
 public:
   using Renderer::Renderer;
 private:

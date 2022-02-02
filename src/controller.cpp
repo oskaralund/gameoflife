@@ -7,10 +7,9 @@
 #include "game_of_life.hpp"
 
 Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* renderer)
-  : game_{game}
-  , window_{window}
-  , renderer_{renderer}
-{
+    : game_{game}
+    , window_{window}
+    , renderer_{renderer} {
   cursor_world_pos_ = GetCursorWorldPosition();
 
   font_.loadFromFile("../res/arial.ttf");
@@ -22,10 +21,8 @@ Controller::Controller(GameOfLife* game, sf::RenderWindow* window, Renderer* ren
 void Controller::ProcessInput() {
   sf::Event event;
 
-  while (window_->pollEvent(event))
-  {
-    switch (event.type)
-    {
+  while (window_->pollEvent(event)) {
+    switch (event.type) {
       case sf::Event::Closed:
         window_->close();
         break;
@@ -56,19 +53,15 @@ void Controller::ProcessInput() {
   }
 }
 
-void Controller::KeyPressed(sf::Event event)
-{
-  switch (event.key.code)
-  {
+void Controller::KeyPressed(sf::Event event) {
+  switch (event.key.code) {
     case sf::Keyboard::Space:
-      if (!paused_)
-      {
+      if (!paused_) {
         paused_ = true;
         time_factor_ = game_->time_factor();
         game_->set_time_factor(0);
       }
-      else
-      {
+      else {
         paused_ = false;
         game_->set_time_factor(time_factor_);
       }
@@ -86,8 +79,7 @@ void Controller::KeyPressed(sf::Event event)
       if (paused_)
         break;
 
-      if (game_->time_factor() < 20)
-      {
+      if (game_->time_factor() < 20) {
         game_->set_time_factor(game_->time_factor()+1);
         time_factor_ = game_->time_factor();
       }
@@ -97,8 +89,7 @@ void Controller::KeyPressed(sf::Event event)
       if (paused_)
         break;
 
-      if (game_->time_factor() > 0)
-      {
+      if (game_->time_factor() > 0) {
         game_->set_time_factor(game_->time_factor()-1);
         time_factor_ = game_->time_factor();
       }
@@ -149,34 +140,28 @@ void Controller::KeyPressed(sf::Event event)
   }
 }
 
-void Controller::MouseButtonPressed(sf::Event event)
-{
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-  {
+void Controller::MouseButtonPressed(sf::Event event) {
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     Paint();
   }
 }
 
-void Controller::MouseMoved(sf::Event event)
-{
+void Controller::MouseMoved(sf::Event event) {
   auto new_cursor = GetCursorWorldPosition();
   auto cursor_delta = new_cursor-cursor_world_pos_;
 
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-  {
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
     renderer_->MoveCamera(-cursor_delta);
   }
 
-  if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-  {
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     Paint();
   }
 
   cursor_world_pos_ = GetCursorWorldPosition();
 }
 
-void Controller::MouseWheelScrolled(sf::Event event)
-{
+void Controller::MouseWheelScrolled(sf::Event event) {
   auto scroll_delta = event.mouseWheelScroll.delta;
   auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
   if (scroll_delta == -1) {
@@ -188,16 +173,14 @@ void Controller::MouseWheelScrolled(sf::Event event)
   }
 }
 
-sf::Vector2f Controller::GetCursorWorldPosition() const
-{
+sf::Vector2f Controller::GetCursorWorldPosition() const {
   auto cursor_pixel_pos = sf::Mouse::getPosition(*window_);
   auto cursor_world_pos = window_->mapPixelToCoords(cursor_pixel_pos);
 
   return cursor_world_pos;
 }
 
-void Controller::Paint() const
-{
+void Controller::Paint() const {
   auto cursor = GetCursorWorldPosition();
   int i, j;
   game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
@@ -206,17 +189,14 @@ void Controller::Paint() const
   int max_j = glm::min(j+brush_size_, game_->num_cols()-1);
   int min_j = glm::max(j-brush_size_, 0);
 
-  for (int i = min_i; i <= max_i; ++i)
-  {
-    for (int j = min_j; j <= max_j; ++j)
-    {
+  for (int i = min_i; i <= max_i; ++i) {
+    for (int j = min_j; j <= max_j; ++j) {
       game_->SetTileType(i, j, selected_type_);
     }
   }
 }
 
-void Controller::Render()
-{
+void Controller::Render() {
   const auto prev_view = window_->getView();
   const auto window_size = window_->getSize();
   const auto gui_view = sf::View({0.0f, 0.0f, static_cast<float>(window_size.x), static_cast<float>(window_size.y)});
@@ -228,21 +208,18 @@ void Controller::Render()
   const auto startx = padding;
   const auto starty = window_size.y - padding - 20;
 
-  for (int i = 0; i < 10; ++i)
-  {
+  for (int i = 0; i < 10; ++i) {
     rect.setPosition({startx + i*(rect_size + padding), starty});
     rect.setFillColor({renderer_->colors_[i][0],
                        renderer_->colors_[i][1],
                        renderer_->colors_[i][2],
                        renderer_->colors_[i][3]});
 
-    if (i == selected_type_)
-    {
+    if (i == selected_type_) {
       rect.setOutlineThickness(3);
       rect.setOutlineColor(sf::Color(250, 150, 100));
     }
-    else
-    {
+    else {
       rect.setOutlineThickness(0);
     }
 
@@ -256,8 +233,7 @@ void Controller::Render()
   DrawBrush();
 }
 
-void Controller::DrawBrush() const
-{
+void Controller::DrawBrush() const {
   auto cursor = GetCursorWorldPosition();
   int i, j;
   game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
@@ -272,10 +248,8 @@ void Controller::DrawBrush() const
   const auto dy = game_->dy();
 
   sf::RectangleShape rect{{dx*(1-2*padding), dy*(1-2*padding)}};
-  for (int i = min_i; i <= max_i; ++i)
-  {
-    for (int j = min_j; j <= max_j; ++j)
-    {
+  for (int i = min_i; i <= max_i; ++i) {
+    for (int j = min_j; j <= max_j; ++j) {
       rect.setPosition({-1 + (j+padding)*dy, -1 + (i+padding)*dx});
       rect.setFillColor({renderer_->colors_[selected_type_][0],
                          renderer_->colors_[selected_type_][1],
@@ -286,8 +260,7 @@ void Controller::DrawBrush() const
   }
 }
 
-void Controller::DrawHeader()
-{
+void Controller::DrawHeader() {
   const auto time_factor = std::to_string(static_cast<int>(time_factor_));
   const auto paused = paused_ ? "Paused" : "";
   std::string string = time_factor + "x\t" + paused;

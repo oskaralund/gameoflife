@@ -12,8 +12,7 @@
 int Agent::instances = 0;
 
 Agent::Agent(GameOfLife* game)
-  : game_(game)
-{
+    : game_(game) {
   id_ = Agent::instances++;
   tile_ = GetCurrentTile();
   prev_tile_ = GetCurrentTile();
@@ -22,8 +21,7 @@ Agent::Agent(GameOfLife* game)
 void Agent::Move(float dt)
 {
   auto tile = GetCurrentTile();
-  if (tile_ != tile)
-  {
+  if (tile_ != tile) {
     prev_tile_ = tile_;
     tile_ = tile;
     ReactToTile(tile_);
@@ -35,61 +33,35 @@ void Agent::Move(float dt)
 
 void Agent::EnforceWalls()
 {
-  if (position_.x < -1)
-  {
+  if (position_.x < -1) {
     position_.x = -1.0;
     velocity_.x = glm::abs(velocity_.x);
   }
 
-  if (position_.x > 1)
-  {
+  if (position_.x > 1) {
     position_.x = 1.0;
     velocity_.x = -glm::abs(velocity_.x);
   }
 
-  if (position_.y < -1)
-  {
+  if (position_.y < -1) {
     position_.y = -1.0;
     velocity_.y = glm::abs(velocity_.y);
   }
 
-  if (position_.y > 1)
-  {
+  if (position_.y > 1) {
     position_.y = 1.0;
     velocity_.y = -glm::abs(velocity_.y);
   }
 
 }
 
-void Agent::ReactToTile(Tile*)
-{
+void Agent::ReactToTile(Tile*) {
 
 }
 
-void Agent::set_position(glm::fvec2 p)
-{
+void Agent::set_position(glm::fvec2 p) {
   position_ = p;
   tile_ = GetCurrentTile();
-}
-
-void Agent::set_velocity(glm::fvec2 v)
-{
-  velocity_ = v;
-}
-
-glm::fvec2 Agent::velocity() const
-{
-  return velocity_;
-}
-
-glm::fvec2 Agent::position() const
-{
-  return position_;
-}
-
-glm::fvec2 Agent::previous_position() const
-{
-  return prev_position_;
 }
 
 void Agent::GetCurrentTileCoords(int* i, int* j) const {
@@ -99,53 +71,45 @@ void Agent::GetCurrentTileCoords(int* i, int* j) const {
   *j = glm::clamp(*j, 0, game_->num_cols()-1);
 }
 
-Tile* Agent::GetCurrentTile() const
-{
+Tile* Agent::GetCurrentTile() const {
   int i, j;
   GetCurrentTileCoords(&i, &j);
   return game_->GetTile(i, j);
 }
 
-void Agent::SetCurrentTileType(int type) const
-{
+void Agent::SetCurrentTileType(int type) const {
   int i, j;
   GetCurrentTileCoords(&i, &j);
   game_->SetTileType(i, j, type);
 }
 
-void Agent::GoToward(glm::fvec2 target)
-{
+void Agent::GoToward(glm::fvec2 target) {
   const auto dir = target - position_;
 
-  if (glm::length(dir) < 1e-10)
-  {
+  if (glm::length(dir) < 1e-10) {
     return;
   }
 
   velocity_ = speed_*glm::normalize(dir);
 }
 
-glm::fvec2 Agent::GetTileCenter(const Tile& tile)
-{
+glm::fvec2 Agent::GetTileCenter(const Tile& tile) {
   const auto i = tile.row;
   const auto j = tile.col;
 
   return {(j+0.5)*game_->dx()-1, (i+0.5)*game_->dy()-1};
 }
 
-int Agent::id() const
-{
-  return id_;
-}
-
-AdjacentTiles Agent::GetAdjacentTiles() const
-{
+AdjacentTiles Agent::GetAdjacentTiles() const {
   int i, j;
   GetCurrentTileCoords(&i, &j);
   return AdjacentTiles(game_, i, j);
 }
 
-Tile* Agent::GetPreviousTile() const
-{
-  return prev_tile_;
-}
+void Agent::set_velocity(glm::fvec2 v) { velocity_ = v; }
+uint32_t Agent::id() const { return id_; }
+Tile* Agent::GetPreviousTile() const { return prev_tile_; }
+GameOfLife* Agent::game() const { return game_; }
+glm::fvec2 Agent::velocity() const { return velocity_; }
+glm::fvec2 Agent::position() const { return position_; }
+glm::fvec2 Agent::previous_position() const { return prev_position_; }

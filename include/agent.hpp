@@ -37,12 +37,13 @@ public:
 
   void set_position(glm::fvec2);
   void set_velocity(glm::fvec2);
+  GameOfLife* game() const;
   glm::fvec2 position() const;
   glm::fvec2 previous_position() const;
   glm::fvec2 velocity() const;
 
   // Returns a unique integer associated with the agent.
-  int id() const;
+  uint32_t id() const;
 
   // Rotates the agent's velocity toward a target.
   void GoToward(glm::fvec2 target);
@@ -59,7 +60,7 @@ public:
   glm::fvec2 GetTileCenter(const Tile&);
 
 private:
-  int id_;
+  uint32_t id_;
   int view_distance_{1};
   glm::fvec2 position_{0,0};
   glm::fvec2 velocity_{0,0};
