@@ -64,13 +64,13 @@ void Controller::KeyPressed(sf::Event event)
       if (!paused_)
       {
         paused_ = true;
-        time_factor_ = game_->time_factor_;
-        game_->time_factor_ = 0;
+        time_factor_ = game_->time_factor();
+        game_->set_time_factor(0);
       }
       else
       {
         paused_ = false;
-        game_->time_factor_ = time_factor_;
+        game_->set_time_factor(time_factor_);
       }
       break;
 
@@ -86,10 +86,10 @@ void Controller::KeyPressed(sf::Event event)
       if (paused_)
         break;
 
-      if (game_->time_factor_ < 20)
+      if (game_->time_factor() < 20)
       {
-        game_->time_factor_ += 1;
-        time_factor_ = game_->time_factor_;
+        game_->set_time_factor(game_->time_factor()+1);
+        time_factor_ = game_->time_factor();
       }
       break;
 
@@ -97,10 +97,10 @@ void Controller::KeyPressed(sf::Event event)
       if (paused_)
         break;
 
-      if (game_->time_factor_ > 0)
+      if (game_->time_factor() > 0)
       {
-        game_->time_factor_ -= 1;
-        time_factor_ = game_->time_factor_;
+        game_->set_time_factor(game_->time_factor()-1);
+        time_factor_ = game_->time_factor();
       }
       break;
 
@@ -201,9 +201,9 @@ void Controller::Paint() const
   auto cursor = GetCursorWorldPosition();
   int i, j;
   game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
-  int max_i = glm::min(i+brush_size_, game_->num_rows_-1);
+  int max_i = glm::min(i+brush_size_, game_->num_rows()-1);
   int min_i = glm::max(i-brush_size_, 0);
-  int max_j = glm::min(j+brush_size_, game_->num_cols_-1);
+  int max_j = glm::min(j+brush_size_, game_->num_cols()-1);
   int min_j = glm::max(j-brush_size_, 0);
 
   for (int i = min_i; i <= max_i; ++i)
@@ -261,15 +261,15 @@ void Controller::DrawBrush() const
   auto cursor = GetCursorWorldPosition();
   int i, j;
   game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
-  int max_i = glm::min(i+brush_size_, game_->num_rows_-1);
+  int max_i = glm::min(i+brush_size_, game_->num_rows()-1);
   int min_i = glm::max(i-brush_size_, 0);
-  int max_j = glm::min(j+brush_size_, game_->num_cols_-1);
+  int max_j = glm::min(j+brush_size_, game_->num_cols()-1);
   int min_j = glm::max(j-brush_size_, 0);
 
 
   const auto padding = 0.3f;
-  const auto dx = game_->dx_;
-  const auto dy = game_->dy_;
+  const auto dx = game_->dx();
+  const auto dy = game_->dy();
 
   sf::RectangleShape rect{{dx*(1-2*padding), dy*(1-2*padding)}};
   for (int i = min_i; i <= max_i; ++i)

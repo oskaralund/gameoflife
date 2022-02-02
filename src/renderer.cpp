@@ -134,7 +134,7 @@ void Renderer::DrawAgents()
   for (std::size_t i = 0; i < game_->num_agents(); ++i)
   {
     sf::Vertex* point = &individual_va_[i];
-    const auto& pos = game_->GetAgent(i)->GetPosition();
+    const auto& pos = game_->GetAgent(i)->position();
     point->position = {static_cast<float>(pos[0]), static_cast<float>(pos[1])};
     point->color = {255, 255, 255, 255};
   }

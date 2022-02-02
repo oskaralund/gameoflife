@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 #include <functional>
 
 #include <glm/glm.hpp>
@@ -31,11 +32,14 @@ public:
   glm::dvec2 GetTileCenter(int i, int j) const;
   void PositionToTile(glm::fvec2, int*, int*) const;
 
-  const int& num_rows() const;
-  const int& num_cols() const;
-  const float& dx() const { return dx_; }
-  const float& dy() const { return dy_; }
-  int num_agents() const { return agents_.size(); }
+  int num_rows() const;
+  int num_cols() const;
+  float dx() const;
+  float dy() const;
+  float time_factor() const;
+  int num_agents() const;
+
+  void set_time_factor(float);
 
 private:
   int num_rows_{100};
@@ -50,8 +54,6 @@ private:
 
   void Initialize();
   void UpdateTiles(float dt);
-
-  friend Controller;
 };
 
 #endif

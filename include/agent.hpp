@@ -35,19 +35,14 @@ public:
   // default it does nothing. Override it to get custom behavior.
   virtual void ReactToTile(Tile* tile);
 
-  void SetPosition(glm::fvec2);
-  void SetVelocity(glm::fvec2);
-  void SetRadius(float);
-  float GetRadius() const;
-  glm::fvec2 GetPosition() const;
-  glm::fvec2 GetPreviousPosition() const;
-  glm::fvec2 GetVelocity() const;
-  GameOfLife* GetGame() const;
-
-protected:
+  void set_position(glm::fvec2);
+  void set_velocity(glm::fvec2);
+  glm::fvec2 position() const;
+  glm::fvec2 previous_position() const;
+  glm::fvec2 velocity() const;
 
   // Returns a unique integer associated with the agent.
-  int GetId() const;
+  int id() const;
 
   // Rotates the agent's velocity toward a target.
   void GoToward(glm::fvec2 target);

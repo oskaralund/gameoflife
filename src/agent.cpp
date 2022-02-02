@@ -66,35 +66,30 @@ void Agent::ReactToTile(Tile*)
 
 }
 
-void Agent::SetPosition(glm::fvec2 p)
+void Agent::set_position(glm::fvec2 p)
 {
   position_ = p;
   tile_ = GetCurrentTile();
 }
 
-void Agent::SetVelocity(glm::fvec2 v)
+void Agent::set_velocity(glm::fvec2 v)
 {
   velocity_ = v;
 }
 
-glm::fvec2 Agent::GetVelocity() const
+glm::fvec2 Agent::velocity() const
 {
   return velocity_;
 }
 
-glm::fvec2 Agent::GetPosition() const
+glm::fvec2 Agent::position() const
 {
   return position_;
 }
 
-glm::fvec2 Agent::GetPreviousPosition() const
+glm::fvec2 Agent::previous_position() const
 {
   return prev_position_;
-}
-
-GameOfLife* Agent::GetGame() const
-{
-  return game_;
 }
 
 void Agent::GetCurrentTileCoords(int* i, int* j) const {
@@ -138,7 +133,7 @@ glm::fvec2 Agent::GetTileCenter(const Tile& tile)
   return {(j+0.5)*game_->dx()-1, (i+0.5)*game_->dy()-1};
 }
 
-int Agent::GetId() const
+int Agent::id() const
 {
   return id_;
 }

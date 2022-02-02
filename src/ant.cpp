@@ -61,7 +61,7 @@ void Ant::ReactToTile(Tile* tile)
       break;
 
     case TileType::Wall:
-      SetPosition(GetPreviousPosition());
+      set_position(previous_position());
       GoToward(GetTileCenter(*GetPreviousTile()));
       break;
 
@@ -73,7 +73,7 @@ void Ant::ReactToTile(Tile* tile)
 void Ant::RandomDirectionAdjustment()
 {
   auto angle = glm::linearRand(-max_turning_angle_, max_turning_angle_);
-  SetVelocity(glm::rotate(GetVelocity(), angle));
+  set_velocity(glm::rotate(velocity(), angle));
 }
 
 void Ant::LeaveScent(Tile* tile) const
@@ -119,9 +119,9 @@ void Ant::Sniff(Tile* tile)
   const auto rand = glm::linearRand(0.0, 1.0);
   if (rand > exploration_)
   {
-    const auto new_dir = glm::normalize(GetTileCenter(*smelliest_tile) - GetPosition());
-    const auto cur_dir = glm::normalize(GetVelocity());
-    SetVelocity(0.05f*glm::normalize(0.5f*new_dir + 0.5f*cur_dir));
+    const auto new_dir = glm::normalize(GetTileCenter(*smelliest_tile) - position());
+    const auto cur_dir = glm::normalize(velocity());
+    set_velocity(0.05f*glm::normalize(0.5f*new_dir + 0.5f*cur_dir));
     //GoToward(GetTileCenter(*smelliest_tile));
   }
 }
@@ -163,8 +163,8 @@ void AddAntColony(GameOfLife* game, int num_ants, int i, int j)
     auto ant = std::make_unique<Ant>(game);
 
     auto theta = glm::linearRand(0.0, 2.0*3.14);
-    ant->SetVelocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
-    ant->SetPosition(pos);
+    ant->set_velocity({0.05*glm::cos(theta), 0.05*glm::sin(theta)});
+    ant->set_position(pos);
     game->AddAgent(std::move(ant));
   }
 }

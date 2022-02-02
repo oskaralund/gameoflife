@@ -89,22 +89,16 @@ glm::dvec2 GameOfLife::GetTileCenter(int i, int j) const
   return {(j+0.5)*dx_-1, (i+0.5)*dy_-1};
 }
 
-const int& GameOfLife::num_rows() const
-{
-  return num_rows_;
-}
-
-const int& GameOfLife::num_cols() const
-{
-  return num_cols_;
-}
-
 void GameOfLife::AddAgent(std::unique_ptr<Agent> agent)
 {
   agents_.push_back(std::move(agent));
 }
 
-Agent* GameOfLife::GetAgent(int i)
-{ 
-  return agents_[i].get();
-}
+int GameOfLife::num_rows() const { return num_rows_; }
+int GameOfLife::num_cols() const { return num_cols_; }
+Agent* GameOfLife::GetAgent(int i) { return agents_[i].get(); }
+float GameOfLife::time_factor() const { return time_factor_; }
+void GameOfLife::set_time_factor(float c) { time_factor_ = c; }
+int GameOfLife::num_agents() const { return agents_.size(); }
+float GameOfLife::dx() const { return dx_; }
+float GameOfLife::dy() const { return dy_; }
