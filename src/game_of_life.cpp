@@ -25,8 +25,8 @@ void GameOfLife::Initialize() {
     }
   }
 
-  dx_ = 2.0/num_cols_;
-  dy_ = 2.0/num_rows_;
+  dx_ = 2.0f/num_cols_;
+  dy_ = 2.0f/num_rows_;
 }
 
 Tile* GameOfLife::GetTile(int i, int j) {
@@ -70,8 +70,8 @@ void GameOfLife::PositionToTile(glm::fvec2 pos, int* i, int* j) const {
   *j = glm::clamp(*j, 0, num_cols_-1);
 }
 
-glm::dvec2 GameOfLife::GetTileCenter(int i, int j) const {
-  return {(j+0.5)*dx_-1, (i+0.5)*dy_-1};
+glm::fvec2 GameOfLife::GetTileCenter(int i, int j) const {
+  return {(j+0.5f)*dx_-1, (i+0.5f)*dy_-1};
 }
 
 void GameOfLife::AddAgent(std::unique_ptr<Agent> agent) {
