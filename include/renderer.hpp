@@ -13,7 +13,7 @@ public:
   void MoveCamera(sf::Vector2f);
   void Zoom(float factor);
   void ZoomAt(sf::Vector2i pixel, float factor);
-  void MatchWindowCameraRatio();
+  void HandleWindowResize();
   void set_selected_color(int);
   sf::Vector2f GetCursorWorldPosition() const;
 

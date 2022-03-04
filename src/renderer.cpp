@@ -1,3 +1,4 @@
+#include <iostream>
 #include "renderer.hpp"
 
 #include "game_of_life.hpp"
@@ -10,7 +11,7 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
     , individual_va_(sf::Points, game->num_agents())
     , gui_view_{window->getDefaultView()} {
   world_view_.setCenter(sf::Vector2f{0.0f, 0.0f});
-  MatchWindowCameraRatio();
+  HandleWindowResize();
   window_->setView(world_view_);
   font_.loadFromFile("../res/arial.ttf");
   header_.setFont(font_);
@@ -137,12 +138,13 @@ void Renderer::ZoomAt(sf::Vector2i pixel, float factor) {
   world_view_.move(offset_coords);
 }
 
-void Renderer::MatchWindowCameraRatio() {
+void Renderer::HandleWindowResize() {
   const auto window_size = window_->getSize();
   const auto width = static_cast<float>(window_size.x);
   const auto height = static_cast<float>(window_size.y);
   const auto ratio = width/height;
-  world_view_.setSize(sf::Vector2f{2.0f*ratio, 2.0f});
+  world_view_.setSize({2.0f*ratio, 2.0f});
+  gui_view_ = sf::View{sf::FloatRect{0.0f, 0.0f, width, height}};
 }
 
 void Renderer::DrawGUI() {

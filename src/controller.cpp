@@ -39,7 +39,7 @@ void Controller::ProcessInput() {
         break;
 
       case sf::Event::Resized:
-        renderer_->MatchWindowCameraRatio();
+        renderer_->HandleWindowResize();
         break;
 
       default:
