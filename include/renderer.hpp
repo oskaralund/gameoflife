@@ -14,12 +14,18 @@ public:
   void Zoom(float factor);
   void ZoomAt(sf::Vector2i pixel, float factor);
   void MatchWindowCameraRatio();
-
-protected:
+  void set_selected_color(int);
+  sf::Vector2f GetCursorWorldPosition() const;
   virtual void DrawGrid();
   virtual void DrawTiles();
   virtual void DrawAgents();
   virtual void DrawOuterWalls();
+  virtual void DrawGUI();
+  virtual void DrawBrush();
+  virtual void DrawBrushSelector();
+  virtual void DrawHeader();
+
+protected:
   sf::RenderWindow* window_;
   GameOfLife* game_;
   sf::VertexArray grid_va_;
@@ -38,9 +44,12 @@ protected:
   };
 
 private:
-  sf::View view_;
-  sf::Vector2f view_velocity_{.0f,.0f};
+  sf::View world_view_;
+  sf::View gui_view_;
   sf::Clock clock_;
+  sf::Font font_;
+  sf::Text header_;
+  int selected_color_{0};
 
   friend Controller;
 };

@@ -16,7 +16,6 @@
 #include "tile.hpp"
 #include "agent.hpp"
 
-class Controller;
 
 class GameOfLife {
 public:

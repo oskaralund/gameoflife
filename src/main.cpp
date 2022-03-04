@@ -26,7 +26,6 @@ int main()
     controller.ProcessInput();
     window.clear();
     renderer.Render();
-    controller.Render();
     window.display();
   }
 

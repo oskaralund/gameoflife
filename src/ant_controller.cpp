@@ -2,13 +2,14 @@
 
 #include "game_of_life.hpp"
 #include "ant.hpp"
+#include "renderer.hpp"
 
 namespace ants
 {
 
 
 void AntController::Paint() const {
-  auto cursor = GetCursorWorldPosition();
+  auto cursor = renderer()->GetCursorWorldPosition();
   auto brush_type = GetSelectedBrushType();
   auto brush_size = GetBrushSize();
   auto game = GetGame();

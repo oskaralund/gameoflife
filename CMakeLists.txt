@@ -1,11 +1,8 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
 
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-project(gameoflife LANGUAGES CXX C)
-
-find_package(OpenMP REQUIRED)
+project(gameoflife LANGUAGES CXX)
 
 add_executable(main src/main.cpp
                     src/renderer.cpp
@@ -17,5 +14,11 @@ add_executable(main src/main.cpp
                     src/game_of_life.cpp
                     src/adjacent_tiles.cpp)
 target_include_directories(main PUBLIC include)
-target_link_libraries(main PUBLIC -lsfml-graphics -lsfml-window -lsfml-system PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(main PUBLIC -lsfml-graphics -lsfml-window -lsfml-system)
+
+#find_package(OpenMP REQUIRED)
+#if(OpenMP_CXX_FOUND)
+#    target_link_libraries(main PUBLIC OpenMP::OpenMP_CXX)
+#endif()
+
 target_compile_features(main PUBLIC cxx_std_20)
