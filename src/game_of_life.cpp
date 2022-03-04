@@ -15,8 +15,7 @@ void GameOfLife::Initialize() {
   for (int i = 0; i < num_rows_; ++i) {
     tiles_[i].reserve(num_cols_);
     for (int j = 0; j < num_cols_; ++j) {
-      Tile tile = {i, j};
-      tiles_[i].push_back(tile);
+      tiles_[i].push_back({i, j});
     }
   }
 

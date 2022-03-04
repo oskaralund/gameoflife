@@ -11,11 +11,12 @@ class Controller {
 public:
   Controller(GameOfLife*, sf::RenderWindow*, Renderer*);
   void ProcessInput();
-  Renderer* renderer() const;
-  uint8_t GetSelectedBrushType() const { return selected_type_; }
-  uint8_t GetBrushSize() const { return brush_size_; }
   virtual void Paint() const;
-  GameOfLife* GetGame() const { return game_; }
+
+  GameOfLife* game() const;
+  Renderer* renderer() const;
+  uint8_t brush_size() const;
+  uint8_t selected_brush_type() const;
 
 private:
   GameOfLife* game_;

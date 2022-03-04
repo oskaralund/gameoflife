@@ -194,3 +194,6 @@ void Controller::Paint() const {
 }
 
 Renderer* Controller::renderer() const { return renderer_; }
+GameOfLife* Controller::game() const { return game_; }
+uint8_t Controller::brush_size() const { return brush_size_; }
+uint8_t Controller::selected_brush_type() const { return selected_type_; }

@@ -28,7 +28,7 @@ public:
   Tile* GetTile(int, int);
   Agent* GetAgent(uint32_t id);
   void RemoveAgent(uint32_t id);
-  glm::vec2 GetTileCenter(int i, int j) const;
+  glm::vec2 GetTileCenter(int, int) const;
   TileIndex PositionToTile(glm::vec2) const;
 
   int num_rows() const;
