@@ -12,7 +12,6 @@ Renderer::Renderer(sf::RenderWindow* window, GameOfLife* game)
   world_view_.setCenter(sf::Vector2f{0.0f, 0.0f});
   MatchWindowCameraRatio();
   window_->setView(world_view_);
-  clock_.restart();
   font_.loadFromFile("../res/arial.ttf");
   header_.setFont(font_);
   header_.setCharacterSize(24);

@@ -16,6 +16,7 @@ public:
   void MatchWindowCameraRatio();
   void set_selected_color(int);
   sf::Vector2f GetCursorWorldPosition() const;
+
   virtual void DrawGrid();
   virtual void DrawTiles();
   virtual void DrawAgents();
@@ -46,12 +47,9 @@ protected:
 private:
   sf::View world_view_;
   sf::View gui_view_;
-  sf::Clock clock_;
   sf::Font font_;
   sf::Text header_;
   int selected_color_{0};
-
-  friend Controller;
 };
 
 #endif
