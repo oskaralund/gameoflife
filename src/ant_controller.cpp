@@ -13,8 +13,7 @@ void AntController::Paint() const {
   auto brush_type = GetSelectedBrushType();
   auto brush_size = GetBrushSize();
   auto game = GetGame();
-  int i, j;
-  GetGame()->PositionToTile({cursor.x, cursor.y}, &i, &j);
+  auto [i, j] = GetGame()->PositionToTile({cursor.x, cursor.y});
   int max_i = glm::min(i+brush_size, game->num_rows()-1);
   int min_i = glm::max(i-brush_size, 0);
   int max_j = glm::min(j+brush_size, game->num_cols()-1);

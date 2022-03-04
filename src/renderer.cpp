@@ -180,8 +180,7 @@ void Renderer::DrawBrushSelector() {
 
 void Renderer::DrawBrush() {
   auto cursor = GetCursorWorldPosition();
-  int i, j;
-  game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
+  auto [i, j] = game_->PositionToTile({cursor.x, cursor.y});
   int max_i = glm::min(i+1, game_->num_rows()-1);
   int min_i = glm::max(i-1, 0);
   int max_j = glm::min(j+1, game_->num_cols()-1);

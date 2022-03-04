@@ -19,16 +19,17 @@
 
 class GameOfLife {
 public:
-  GameOfLife(); // Constructs a 100x100 GameOfLife object.
-  GameOfLife(int rows, int cols); // Constructs a rows x cols GameOfLife object.
-  void Move(float elapsed_time); // Move forward in time.
+  using TileIndex = std::array<int, 2>;
+
+  GameOfLife(int rows, int cols);
+  void Move(float elapsed_time);
   void AddAgent(std::unique_ptr<Agent>);
   void SetTileType(int i, int j, int type);
   Tile* GetTile(int, int);
   Agent* GetAgent(uint32_t id);
   void RemoveAgent(uint32_t id);
-  glm::fvec2 GetTileCenter(int i, int j) const;
-  void PositionToTile(glm::fvec2, int*, int*) const;
+  glm::vec2 GetTileCenter(int i, int j) const;
+  TileIndex PositionToTile(glm::vec2) const;
 
   int num_rows() const;
   int num_cols() const;

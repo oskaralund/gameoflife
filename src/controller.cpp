@@ -180,8 +180,7 @@ void Controller::MouseWheelScrolled(sf::Event event) {
 
 void Controller::Paint() const {
   auto cursor = renderer_->GetCursorWorldPosition();
-  int i, j;
-  game_->PositionToTile({cursor.x, cursor.y}, &i, &j);
+  auto [i, j] = game_->PositionToTile({cursor.x, cursor.y});
   int max_i = glm::min(i+brush_size_, game_->num_rows()-1);
   int min_i = glm::max(i-brush_size_, 0);
   int max_j = glm::min(j+brush_size_, game_->num_cols()-1);

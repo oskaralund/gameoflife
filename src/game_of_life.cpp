@@ -4,11 +4,6 @@
 
 #include "ant.hpp"
 
-GameOfLife::GameOfLife()
-  : tiles_(num_rows_) {
-  Initialize();
-}
-
 GameOfLife::GameOfLife(int rows, int cols)
     : num_rows_(rows)
     , num_cols_(cols)
@@ -63,14 +58,15 @@ void GameOfLife::UpdateTiles(float dt) {
   }
 }
 
-void GameOfLife::PositionToTile(glm::fvec2 pos, int* i, int* j) const {
-  *i = static_cast<int>((1+pos.y)/dy_);
-  *j = static_cast<int>((1+pos.x)/dx_);
-  *i = glm::clamp(*i, 0, num_rows_-1);
-  *j = glm::clamp(*j, 0, num_cols_-1);
+GameOfLife::TileIndex GameOfLife::PositionToTile(glm::vec2 pos) const {
+  auto i = static_cast<int>((1+pos.y)/dy_);
+  auto j = static_cast<int>((1+pos.x)/dx_);
+  i = glm::clamp(i, 0, num_rows_-1);
+  j = glm::clamp(j, 0, num_cols_-1);
+  return {i, j};
 }
 
-glm::fvec2 GameOfLife::GetTileCenter(int i, int j) const {
+glm::vec2 GameOfLife::GetTileCenter(int i, int j) const {
   return {(j+0.5f)*dx_-1, (i+0.5f)*dy_-1};
 }
 
